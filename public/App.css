@@ -1,0 +1,53 @@
+.gantt_add{
+    display: none;
+}
+.gantt_grid_head_cell{
+    display: none;
+}
+.gantt_grid_head_add{
+    display: none;
+}
+.gantt_last_cell{
+    display: none;
+}
+.numberCircle {
+    font: 32px Arial, sans-serif;
+
+    width: 2em;
+    height: 2em;
+    box-sizing: initial;
+
+    background: #fff;
+    border: 0.1em solid #666;
+    color: #666;
+    text-align: center;
+    border-radius: 50%;
+
+    line-height: 2em;
+    box-sizing: content-box;
+}
+.centerButtonFixedPlugin {
+    display: flex;
+    justify-content: center;
+}
+.labelInput{
+    flex: 3;
+}
+.labelColor {
+    flex: 1;
+}
+.flex {
+    display: flex;
+}
+.logout_sidebar_button {
+    position: relative;
+    min-height: 100%;
+    padding-bottom: 40px;
+
+}
+.centered {
+    height: 100vh; /* Magic here */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
