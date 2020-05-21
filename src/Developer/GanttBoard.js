@@ -62,14 +62,14 @@ export default class GanttBoard extends React.Component {
         return <>
             <SideNav.Toggle/>
 
-            <div className="gantt-container">
                 {this.functiontry().data.length ?
-                    <div className="zoom-bar">
-                    <Toolbar
-                        zoom={this.state.currentZoom}
-                        onZoomChange={this.handleZoomChange}
-                    />
+
                         <div className="gantt-container">
+                            <div className="zoom-bar">
+                                <Toolbar
+                                    zoom={this.state.currentZoom}
+                                    onZoomChange={this.handleZoomChange}
+                                />
                             <Gantt tasks={this.functiontry()}
                                    zoom={this.state.currentZoom}
                             />
@@ -84,7 +84,6 @@ export default class GanttBoard extends React.Component {
                             width={100}
                         />
                     </div>}
-            </div>
 
         </>
 
