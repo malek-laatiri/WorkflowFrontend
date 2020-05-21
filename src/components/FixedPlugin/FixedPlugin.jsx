@@ -119,6 +119,14 @@ class FixedPlugin extends Component {
                                                 })
                                                 this.state.newProjectData.name='';
                                                 createNotification('success', newProjectData.name + ',new label added to the Project')
+                                                this.setState({classes: "dropdown"});
+                                                axios.get(`http://localhost:8000/secured/label/labelsList/` + localStorage.getItem('projectid'))
+                                                    .then(response => {
+                                                        this.setState({
+                                                            labels: response.data
+                                                        })
+                                                    })
+                                                ;
                                             }}
                                         >
                                             Save

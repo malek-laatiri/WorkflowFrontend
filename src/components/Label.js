@@ -66,7 +66,7 @@ class labelx extends Component {
 
 
     deleteProperty(id) {
-        axios.delete('http://localhost:8000/secured/project/projectDelete/' + id).then((response) => {
+        axios.delete('http://localhost:8000/secured/label/labelDelete/' + id).then((response) => {
                 window.location.reload();
 
             }
