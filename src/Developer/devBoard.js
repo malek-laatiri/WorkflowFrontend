@@ -35,7 +35,8 @@ export default class DevBoard extends React.Component {
         },
         selectedOption: null,
         selectedFile: null,
-        isChecked: false
+        isChecked: false,
+        JSONData:''
 
     };
 
@@ -61,6 +62,10 @@ export default class DevBoard extends React.Component {
                 }
             })
         ;
+        this.setState({
+            JSONData:this.functiontry()
+        })
+        console.log(this.state.JSONData)
     }
 
     colorStyles = {
@@ -90,7 +95,13 @@ export default class DevBoard extends React.Component {
                 let stories = [];
                 e.user_stories.map((element) => {
                     draggablex = 1;
-                    if (JSON.stringify(getUser()) != JSON.stringify(element.asigned_to) || getUser().roles.includes("ROLE_CLIENT") && getUser().privilege == 0) {
+
+                    if (getUser().roles.includes("ROLE_CLIENT")) {
+                        if (getUser().privilege == 0) {
+                            draggablex = 0;
+
+                        }
+                    } else if (JSON.stringify(getUser()) != JSON.stringify(element.asigned_to)) {
                         draggablex = 0;
                     }
                     stories.push({
@@ -111,6 +122,7 @@ export default class DevBoard extends React.Component {
                 });
             });
         }
+
         return JSONData
     }
 
@@ -453,8 +465,8 @@ export default class DevBoard extends React.Component {
             <FixedPlugin/>
 
 
-            {this.functiontry().lanes.length ?
-                <Board data={this.functiontry()} laneDraggable cardDraggable collapsibleLanes draggable
+            {this.state.JSONData ?
+                <Board data={this.state.JSONData} laneDraggable cardDraggable collapsibleLanes draggable
                        onCardClick={(cardId, metadata, laneId) => {
                            axios.get('http://localhost:8000/secured/UserStory/userStoryShow/' + cardId)
                                .then(response => {
