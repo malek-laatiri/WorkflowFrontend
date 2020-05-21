@@ -3,10 +3,13 @@ import SideNav from "@trendmicro/react-sidenav";
 import Gantt from "./Gantt";
 import Loader from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
+import Toolbar from "./Toolbar";
 export default class GanttBoard extends React.Component {
     state = {
         projects: [],
-        backlog: []
+        backlog: [],
+        currentZoom: 'Days'
+
     }
 
 
@@ -18,7 +21,11 @@ export default class GanttBoard extends React.Component {
         })
     }
 
-
+    handleZoomChange = (zoom) => {
+        this.setState({
+            currentZoom: zoom
+        });
+    }
     functiontry() {
         let JSONdata = {
             data: '', links: ''
@@ -56,7 +63,19 @@ export default class GanttBoard extends React.Component {
             <SideNav.Toggle/>
 
             <div className="gantt-container">
-                {this.functiontry().data.length ? <Gantt tasks={this.functiontry()}/>
+                {this.functiontry().data.length ?
+                    <div className="zoom-bar">
+                    <Toolbar
+                        zoom={this.state.currentZoom}
+                        onZoomChange={this.handleZoomChange}
+                    />
+                        <div className="gantt-container">
+                            <Gantt tasks={this.functiontry()}
+                                   zoom={this.state.currentZoom}
+                            />
+
+                        </div>
+                    </div>
                     :   <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
                         <Loader
                             type="Bars"
