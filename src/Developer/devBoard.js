@@ -190,39 +190,44 @@ export default class DevBoard extends React.Component {
                        toggle={this.toggleNewBookModal.bind(this)}>
                     <ModalHeader
                         toggle={this.toggleNewBookModal.bind(this)}>
-                        <Grid divided='vertically'>
-                            <Grid.Row columns={2} spacing={3}>
-                                <Grid.Column textAlign="center">
-                                    {this.state.userStroyShow.subject}
-                                </Grid.Column>
-                                <Grid.Column>
-                                    {this.state.userStroyShow.label ?
-                                        <Tooltip title={this.state.userStroyShow.label.name}>
-                                            <div style={{
-                                                backgroundColor: this.state.userStroyShow.label.color,
-                                                fontSize: 12
-                                            }} className="numberCircle"></div>
-                                        </Tooltip> :
-                                        <div>loading</div>}
-                                </Grid.Column>
-                            </Grid.Row>
-                            <Grid.Row columns={2} spacing={3}>
-                                <Grid.Column textAlign="center">
-                                    PUT LABEL:
-                                </Grid.Column>
-                                <Grid.Column spacing={3}>
-                                    <Select
-                                        value={this.state.selectedOption}
-                                        onChange={this.handleChange1}
-                                        options={options}
-                                        isSearchable
-                                    />
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
+                        <div className='rows'>
+                            <div className='row'>
+                                {this.state.userStroyShow.subject}
+                            </div>
+                            <div className='row'>
+                                {this.state.userStroyShow.label ?
+                                    <Tooltip title={this.state.userStroyShow.label.name}>
+                                        <p style={{
+                                            backgroundColor: this.state.userStroyShow.label.color,
+                                            fontSize: 12
+                                        }} className="numberCircle"></p>
+                                    </Tooltip> :
+                                    <div></div>}
+                            </div>
+                        </div>
                     </ModalHeader>
                     <ModalBody>
                         <Grid divided='vertically'>
+                            {getUser().roles.includes("ROLE_CLIENT") ?
+                                <>
+                                    <Grid.Row columns={2} spacing={3}>
+                                        <Grid.Column textAlign="center">
+                                            Put Label:
+                                        </Grid.Column>
+                                        <Grid.Column spacing={3}>
+                                            <Select
+                                                value={this.state.selectedOption}
+                                                onChange={this.handleChange1}
+                                                options={options}
+                                                isSearchable
+                                            />
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </>
+                                :
+                                <>
+                                </>
+                            }
                             <Grid.Row columns={2}>
                                 <Grid.Column textAlign="center">
                                     Subject:
@@ -408,8 +413,7 @@ export default class DevBoard extends React.Component {
                             </Grid.Row>
 
 
-
-                            {JSON.stringify(getUser()) != JSON.stringify(this.state.userStroyShow.asigned_to) || getUser().roles.includes("ROLE_TESTER") ?
+                            {getUser().roles.includes("ROLE_TESTER") ?
                                 <>
 
                                     <Grid.Row columns={2}>
@@ -418,7 +422,7 @@ export default class DevBoard extends React.Component {
                                         </Grid.Column>
                                         <Grid.Column>
                                             <Checkbox toggle onChange={(event) => {
-                                                this.state.userStroyShow.is_verified=!this.state.userStroyShow.is_verified;
+                                                this.state.userStroyShow.is_verified = !this.state.userStroyShow.is_verified;
                                                 axios.patch('http://localhost:8000/secured/UserStory/putIsVerified/' + this.state.userStroyShow.id, {"isVerified": this.state.userStroyShow.is_verified}).then(response => {
                                                     this.createNotification('info', "This userstory is verified !")
                                                 })
@@ -446,16 +450,7 @@ export default class DevBoard extends React.Component {
             <NotificationContainer/>
 
 
-            {getUser().roles.includes("ROLE_CLIENT") ?
-                <>
-                    <FixedPlugin/>
-                </>
-                :
-                <>
-                </>
-            }
-
-
+            <FixedPlugin/>
 
 
             {this.functiontry().lanes.length ?

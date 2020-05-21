@@ -158,6 +158,7 @@ class Project extends Component {
         localStorage.setItem('projectid',id);
         let path = `Backlog/BacklogList/` + id;
         localStorage.setItem('projectid', id);
+        localStorage.removeItem('backlogid')
         this.props.history.push(path);
 
     }

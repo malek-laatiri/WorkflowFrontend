@@ -257,7 +257,7 @@ class UserStory extends Component {
     }
 
     updateProperty() {
-        axios.patch('http://localhost:8000/UserStory/UerStoryUpdate/' + this.state.editUserStoryData.id, this.state.editUserStoryData).then(
+        axios.patch('http://localhost:8000/secured/UserStory/UerStoryUpdate/' + this.state.editUserStoryData.id, this.state.editUserStoryData).then(
             (response) => {
                 let {userstories} = this.state;
                 userstories.push(response.data);

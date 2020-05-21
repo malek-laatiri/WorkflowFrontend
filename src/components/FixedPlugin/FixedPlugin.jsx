@@ -6,6 +6,7 @@ import InputColor from "react-input-color";
 import axios from "axios";
 import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
+import {createNotification, getUser} from "../Common";
 
 class FixedPlugin extends Component {
     constructor(props) {
@@ -45,7 +46,6 @@ class FixedPlugin extends Component {
     }
 
 
-
     render() {
         let colors = this.state.labels.map((element) => {
             return (
@@ -58,9 +58,7 @@ class FixedPlugin extends Component {
                              }
                              data-color="primary"
                              style={{backgroundColor: element.color}}
-                             onClick={() => {
-                                 this.props.handleActiveClick("primary");
-                             }}
+
                          />
                 </Tooltip>
 
@@ -79,49 +77,61 @@ class FixedPlugin extends Component {
                                 {colors}
                             </div>
                         </li>
-                        <li className="adjustments-line">
-                            <div className="flex">
-                                <Input id="name" placeholder="label name"
-                                       className="labelInput"
-                                       value={this.state.newProjectData.name}
-                                       onChange={(e) => {
-                                           let {newProjectData} = this.state;
-                                           newProjectData.name = e.target.value;
-                                           this.setState({newProjectData});
-                                       }}/>
-                                <InputColor
-                                    className="labelColor"
-                                    initialHexColor="#5e72e4"
-                                    onChange={(e) => {
-                                        let {newProjectData} = this.state;
-                                        newProjectData.color = e.hex;
-                                        this.setState({newProjectData});
-                                    }}
-                                    placement="right"
-                                />
-                            </div>
-                        </li>
 
-                        <li className="adjustments-line">
-                            <div className="centerButtonFixedPlugin">
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    size="small"
-                                    onClick={(e) => {
-                                        let {newProjectData} = this.state;
-                                        axios.post('http://localhost:8000/secured/label/labelCreate', {
-                                            color: newProjectData.color,
-                                            name: newProjectData.name,
-                                            project: localStorage.getItem("projectid")
-                                        })
-                                    }}
-                                >
-                                    Save
-                                </Button>
-                            </div>
+                        {getUser().roles.includes("ROLE_CLIENT") ?
+                            <>
+                                <li className="adjustments-line">
+                                    <div className="flex">
+                                        <Input id="name" placeholder="label name"
+                                               className="labelInput"
+                                               value={this.state.newProjectData.name}
+                                               onChange={(e) => {
+                                                   let {newProjectData} = this.state;
+                                                   newProjectData.name = e.target.value;
+                                                   this.setState({newProjectData});
+                                               }}/>
+                                        <InputColor
+                                            className="labelColor"
+                                            initialHexColor="#5e72e4"
+                                            onChange={(e) => {
+                                                let {newProjectData} = this.state;
+                                                newProjectData.color = e.hex;
+                                                this.setState({newProjectData});
+                                            }}
+                                            placement="right"
+                                        />
+                                    </div>
+                                </li>
 
-                        </li>
+                                <li className="adjustments-line">
+                                    <div className="centerButtonFixedPlugin">
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            size="small"
+                                            disabled={!this.state.newProjectData.name || !this.state.newProjectData.color}
+                                            onClick={(e) => {
+                                                let {newProjectData} = this.state;
+                                                axios.post('http://localhost:8000/secured/label/labelCreate', {
+                                                    color: newProjectData.color,
+                                                    name: newProjectData.name,
+                                                    project: localStorage.getItem("projectid")
+                                                })
+                                                this.state.newProjectData.name='';
+                                                createNotification('success', newProjectData.name + ',new label added to the Project')
+                                            }}
+                                        >
+                                            Save
+                                        </Button>
+                                    </div>
+
+                                </li>
+                            </>
+                            :
+                            <>
+                            </>
+                        }
+
                     </ul>
                 </div>
             </div>

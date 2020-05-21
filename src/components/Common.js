@@ -1,3 +1,5 @@
+import {NotificationManager} from "react-notifications";
+
 export const getUser = () => {
     const userStr = localStorage.getItem('user');
     if (userStr) return JSON.parse(userStr);
@@ -22,3 +24,23 @@ export const setUserSession = (token, user) => {
     sessionStorage.setItem('token', token);
     sessionStorage.setItem('user', JSON.stringify(user));
 }
+
+export const createNotification = (type, msg) => {
+    switch (type) {
+        case 'info':
+            NotificationManager.info('Info message', msg);
+            break;
+        case 'success':
+            NotificationManager.success('Success message', msg);
+            break;
+        case 'warning':
+            NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
+            break;
+        case 'error':
+            NotificationManager.error(msg, 'Error!', 5000, () => {
+            });
+            break;
+
+    }
+    ;
+};
