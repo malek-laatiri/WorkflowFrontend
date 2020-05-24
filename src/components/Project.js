@@ -26,7 +26,9 @@ class Project extends Component {
         editProjectData: {
             name: '',
             startDate: '',
-            dueDate: ''
+            dueDate: '',
+            done:'',
+            createdBy: ''
         },
         selectedOption: null
 
@@ -122,6 +124,7 @@ class Project extends Component {
     updateProperty() {
         axios.patch('http://localhost:8000/secured/project/ProjectUpdate/' + this.state.editProjectData.id, this.state.editProjectData).then(
             (response) => {
+                this.state.editProjectData.createdBy=getUser().id;
                 let {projects} = this.state;
                 projects.push(response.data);
                 this.setState({
@@ -130,6 +133,7 @@ class Project extends Component {
                         startDate: '',
                         dueDate: '',
                         createdBy: '',
+                        done:'',
                         Team: []
                     }
                 });
@@ -140,9 +144,9 @@ class Project extends Component {
         );
     }
 
-    editProperty(id, name, startDate, dueDate) {
+    editProperty(id, name, startDate, dueDate,done,createdBy) {
         this.setState({
-            editProjectData: {id, name, startDate, dueDate}, editProjectModal: !this.state.editProjectModal
+            editProjectData: {id, name, startDate, dueDate,done,createdBy}, editProjectModal: !this.state.editProjectModal
         });
     }
 
@@ -178,7 +182,7 @@ class Project extends Component {
                     <td>{book.due_date}</td>
                     <td>
                         <Button color="success" className="mr-2"
-                                onClick={this.editProperty.bind(this, book.id, book.name, book.start_date, book.due_date)}>Edit</Button>
+                                onClick={this.editProperty.bind(this, book.id, book.name, book.start_date, book.due_date,book.done)}>Edit</Button>
                         <Button color="danger" onClick={this.deleteProperty.bind(this, book.id)}>Delete</Button>
 
                     </td>
@@ -290,6 +294,16 @@ class Project extends Component {
                                                                onChange={(e) => {
                                                                    let {editProjectData} = this.state;
                                                                    editProjectData.dueDate = e.target.value;
+                                                                   this.setState({editProjectData});
+
+                                                               }}/>
+                                                        <label htmlFor="due_date">Done</label>
+
+                                                        <Input id="due_date" type="checkbox"
+                                                               placeholder="with a placeholder"
+                                                               onChange={(e) => {
+                                                                   let {editProjectData} = this.state;
+                                                                   editProjectData.done = e.target.value;
                                                                    this.setState({editProjectData});
 
                                                                }}/>
