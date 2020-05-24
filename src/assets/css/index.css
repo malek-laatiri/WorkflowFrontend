@@ -71,3 +71,6 @@ body {
 .rows  {
     display:flex;
 }
+.carous{
+    width: auto;
+}
