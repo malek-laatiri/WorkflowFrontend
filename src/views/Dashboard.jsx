@@ -53,9 +53,11 @@ class Dashboard extends React.Component {
 
                 var array = [];
                 var array1 = [];
-                var counting=0;
-                var countComfirmed=0;
+
                 this.state.status.map((project) => {
+                    var counting=0;
+                    var countComfirmed=0;
+                    console.log(project)
 
                     project.backlog.map((backlog) => {
 
@@ -70,11 +72,11 @@ class Dashboard extends React.Component {
                             }
                         })
                     })
+
                     if (project.done == 0) {
-                        project.prog=countComfirmed*100/counting;
+                        project.prog=100-countComfirmed*100/counting;
                         array1.push(project)
-                    }
-                })
+                    }})
                 this.setState({
                     storiesLength: array.length
                 });
@@ -161,7 +163,7 @@ class Dashboard extends React.Component {
                                                         {proj.name}
                                                     </Grid.Column>
                                                     <Grid.Column textAlign="center">
-                                                        {proj.prog}
+                                                        {proj.prog}%
                                                     </Grid.Column>
                                                     <Grid.Column textAlign="center">
 
