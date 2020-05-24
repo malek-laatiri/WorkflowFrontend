@@ -14,7 +14,9 @@ class Dashboard extends React.Component {
         status: [],
         userstories: [],
         projects: [],
-        isChecked: false
+        isChecked: false,
+        storiesLength: 0,
+        projectsLength: 0
 
     }
 
@@ -24,18 +26,18 @@ class Dashboard extends React.Component {
             .then(response => {
                 this.setState({
                     status: response.data
-                })
+                });
                 this.setState({
                     projects: response.data
-                })
+                });
                 this.setState({
                     userstories: this.updateData()
 
-                })
-                // this.setState({
-                //     projects: this.changeProjectData()
-                //
-                // })
+                });
+
+                this.setState({
+                    projectsLength: this.state.projects.length
+                });
                 console.log(this.state)
 
             })
@@ -48,8 +50,13 @@ class Dashboard extends React.Component {
                 this.setState({
                     status: response.data
                 })
+
                 var array = [];
+                var array1 = [];
                 this.state.status.map((project) => {
+                    if (project.done == 0) {
+                        array1.push(project)
+                    }
                     project.backlog.map((backlog) => {
                         backlog.user_stories.map((userStory) => {
                             console.log(userStory)
@@ -61,41 +68,20 @@ class Dashboard extends React.Component {
                     })
                 })
                 this.setState({
+                    storiesLength: array.length
+                });
+                this.setState({
                     status: array
                 })
+                this.setState({
+                    projects: array1
+                })
+                this.setState({
+                    projectsLength: array1.length
+                });
             })
     }
 
-    // changeProjectData(){
-    //     axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
-    //         .then(response => {
-    //             this.setState({
-    //                 status: response.data
-    //             })
-    //             var array1 = [];
-    //             var countVerified=0;
-    //             var countComfirmed=0;
-    //             var count=0;
-    //             this.state.status.map((project1) => {
-    //                 project1.backlog.map((backlog1) => {
-    //                     backlog1.user_stories.map((userStory1) => {
-    //                         count++;
-    //                         if (userStory1.is_verified == 1) {
-    //                             countVerified++;
-    //                         }
-    //                         else if(userStory1.is_comfirmed == 1){
-    //                             countComfirmed++;
-    //                         }
-    //                     })
-    //                 })
-    //                 project1.verified=countVerified*100/count;
-    //                 project1.comfermed=countComfirmed*100/count;
-    //                 project1.isChecked=false
-    //                 array1.push(project1)
-    //             })
-    //             return array1
-    //         } )
-    // }
 
     render() {
 
@@ -112,25 +98,25 @@ class Dashboard extends React.Component {
                                 <CardBody>
                                     <div className="stats">
                                         <i className="fas fa-sync-alt"/> {this.state.status.map((item1) => {
-                                        return <div><Grid divided='vertically'><Grid.Row columns={2} spacing={3}>
-                                            <Grid.Column textAlign="center">
+                                        return <div><Grid divided='vertically'>
+                                            <Grid.Row columns={2} spacing={3}>
+                                                <Grid.Column textAlign="center">
+                                                    {item1.subject}
+                                                </Grid.Column>
+                                                <Grid.Column textAlign="center">
 
-                                                {item1.subject}
-                                            </Grid.Column>
-                                            <Grid.Column textAlign="center">
+                                                    <Checkbox toggle checked={item1.isChecked} onChange={(event) => {
+                                                        axios.patch('http://localhost:8000/secured/UserStory/PutIsComfirmed/' + item1.id, {isComfirmed: 1})
+                                                        this.setState({
+                                                            userstories: this.updateData()
 
-                                                <Checkbox toggle checked={item1.isChecked} onChange={(event) => {
-                                                    axios.patch('http://localhost:8000/secured/UserStory/PutIsComfirmed/' + item1.id, {isComfirmed: 1})
-                                                    this.setState({
-                                                        userstories: this.updateData()
+                                                        })
+                                                        item1.isChecked = true;
 
-                                                    })
-                                                    item1.isChecked = true;
-
-                                                }}
-                                                />
-                                            </Grid.Column>
-                                        </Grid.Row>
+                                                    }}
+                                                    />
+                                                </Grid.Column>
+                                            </Grid.Row>
                                         </Grid>
                                         </div>
                                     })}
@@ -145,7 +131,7 @@ class Dashboard extends React.Component {
                                     </div>
                                     <hr/>
                                     <div className="stats">
-                                        <i className="fa fa-calendar"/> Number of emails sent
+                                        <i className="fa fa-calendar"/> Number of emails sent {this.state.storiesLength}
                                     </div>
                                 </CardFooter>
                             </Card>
@@ -157,24 +143,43 @@ class Dashboard extends React.Component {
                                     <CardTitle tag="h5">Projects to close</CardTitle>
                                     <p className="card-category">Last Campaign Performance</p>
                                 </CardHeader>
-                                {/*<CardBody>*/}
-                                {/*    <div className="stats">*/}
-                                {/*        <i className="fas fa-sync-alt"/> {this.state.status.map((proj) => {*/}
-                                {/*        return <div>{proj.name}*/}
-                                {/*            <Checkbox toggle  onChange={(event) => {*/}
-                                {/*                axios.patch('http://localhost:8000/secured/project/ProjectDone/' + proj.id)*/}
-                                {/*                this.setState({*/}
-                                {/*                    userstories: this.updateData()*/}
+                                <CardBody>
+                                    <div className="stats">
+                                        <i className="fas fa-sync-alt"/> {this.state.projects.map((proj) => {
+                                        return <div><Grid divided='vertically'>
+                                            <Grid.Row columns={2} spacing={3}>
+                                                <Grid.Column textAlign="center">
+                                                    {proj.name}
+                                                </Grid.Column>
+                                                <Grid.Column textAlign="center">
 
-                                {/*                })*/}
-                                {/*                proj.isChecked=true;*/}
+                                                    <Checkbox toggle checked={proj.isChecked} onChange={(event) => {
+                                                        axios.patch('http://localhost:8000/secured/project/ProjectDone/' + proj.id)
+                                                        axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+                                                            .then(response => {
+                                                                var p = [];
+                                                                response.data.map((val) => {
+                                                                    if (val.done == 0) {
+                                                                        p.push(val)
+                                                                    }
+                                                                })
+                                                                this.setState({
+                                                                    projects: p
 
-                                {/*            }}*/}
-                                {/*            />*/}
-                                {/*        </div>*/}
-                                {/*    })}*/}
-                                {/*    </div>*/}
-                                {/*</CardBody>*/}
+                                                                })
+                                                            })
+
+                                                        proj.isChecked = true;
+
+                                                    }}
+                                                    />
+                                                </Grid.Column>
+                                            </Grid.Row>
+                                        </Grid>
+                                        </div>
+                                    })}
+                                    </div>
+                                </CardBody>
                                 <CardFooter>
                                     <div className="legend">
                                         <i className="fa fa-circle text-primary"/> Opened{" "}
@@ -184,7 +189,8 @@ class Dashboard extends React.Component {
                                     </div>
                                     <hr/>
                                     <div className="stats">
-                                        <i className="fa fa-calendar"/> Number of emails sent
+                                        <i className="fa fa-calendar"/> Number of emails
+                                        sent {this.state.projectsLength}
                                     </div>
                                 </CardFooter>
                             </Card>
