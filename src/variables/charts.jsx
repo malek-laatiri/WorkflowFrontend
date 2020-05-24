@@ -105,7 +105,7 @@ const dashboardEmailStatisticsChart = {
   },
   options: {
     legend: {
-      display: false
+      display: true
     },
 
     pieceLabel: {
@@ -115,17 +115,17 @@ const dashboardEmailStatisticsChart = {
     },
 
     tooltips: {
-      enabled: false
+      enabled: true
     },
 
     scales: {
       yAxes: [
         {
           ticks: {
-            display: false
+            display: true
           },
           gridLines: {
-            drawBorder: false,
+            drawBorder: true,
             zeroLineColor: "transparent",
             color: "rgba(255,255,255,0.05)"
           }
@@ -136,12 +136,12 @@ const dashboardEmailStatisticsChart = {
         {
           barPercentage: 1.6,
           gridLines: {
-            drawBorder: false,
+            drawBorder: true,
             color: "rgba(255,255,255,0.1)",
             zeroLineColor: "transparent"
           },
           ticks: {
-            display: false
+            display: true
           }
         }
       ]

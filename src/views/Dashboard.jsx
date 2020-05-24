@@ -53,19 +53,27 @@ class Dashboard extends React.Component {
 
                 var array = [];
                 var array1 = [];
+                var counting=0;
+                var countComfirmed=0;
                 this.state.status.map((project) => {
-                    if (project.done == 0) {
-                        array1.push(project)
-                    }
+
                     project.backlog.map((backlog) => {
+
                         backlog.user_stories.map((userStory) => {
-                            console.log(userStory)
+                            counting++;
                             if (userStory.is_verified == 1 && userStory.is_comfirmed == 0) {
                                 userStory.isChecked = false;
                                 array.push(userStory)
                             }
+                            if (userStory.is_comfirmed == 0){
+                                countComfirmed++;
+                            }
                         })
                     })
+                    if (project.done == 0) {
+                        project.prog=countComfirmed*100/counting;
+                        array1.push(project)
+                    }
                 })
                 this.setState({
                     storiesLength: array.length
@@ -97,29 +105,30 @@ class Dashboard extends React.Component {
                                 </CardHeader>
                                 <CardBody>
                                     <div className="stats">
-                                        <i className="fas fa-sync-alt"/> {this.state.status.map((item1) => {
-                                        return <div><Grid divided='vertically'>
-                                            <Grid.Row columns={2} spacing={3}>
-                                                <Grid.Column textAlign="center">
-                                                    {item1.subject}
-                                                </Grid.Column>
-                                                <Grid.Column textAlign="center">
+                                        {this.state.status.map((item1) => {
+                                            return <div><Grid divided='vertically'>
+                                                <Grid.Row columns={2} spacing={3}>
+                                                    <Grid.Column textAlign="center">
+                                                        {item1.subject}
+                                                    </Grid.Column>
+                                                    <Grid.Column textAlign="center">
 
-                                                    <Checkbox toggle checked={item1.isChecked} onChange={(event) => {
-                                                        axios.patch('http://localhost:8000/secured/UserStory/PutIsComfirmed/' + item1.id, {isComfirmed: 1})
-                                                        this.setState({
-                                                            userstories: this.updateData()
+                                                        <Checkbox toggle checked={item1.isChecked}
+                                                                  onChange={(event) => {
+                                                                      axios.patch('http://localhost:8000/secured/UserStory/PutIsComfirmed/' + item1.id, {isComfirmed: 1})
+                                                                      this.setState({
+                                                                          userstories: this.updateData()
 
-                                                        })
-                                                        item1.isChecked = true;
+                                                                      })
+                                                                      item1.isChecked = true;
 
-                                                    }}
-                                                    />
-                                                </Grid.Column>
-                                            </Grid.Row>
-                                        </Grid>
-                                        </div>
-                                    })}
+                                                                  }}
+                                                        />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                            </div>
+                                        })}
                                     </div>
                                 </CardBody>
                                 <CardFooter>
@@ -145,39 +154,46 @@ class Dashboard extends React.Component {
                                 </CardHeader>
                                 <CardBody>
                                     <div className="stats">
-                                        <i className="fas fa-sync-alt"/> {this.state.projects.map((proj) => {
-                                        return <div><Grid divided='vertically'>
-                                            <Grid.Row columns={2} spacing={3}>
-                                                <Grid.Column textAlign="center">
-                                                    {proj.name}
-                                                </Grid.Column>
-                                                <Grid.Column textAlign="center">
+                                        {this.state.projects.map((proj) => {
+                                            return <div><Grid divided='vertically'>
+                                                <Grid.Row columns={3} spacing={3}>
+                                                    <Grid.Column textAlign="center">
+                                                        {proj.name}
+                                                    </Grid.Column>
+                                                    <Grid.Column textAlign="center">
+                                                        {proj.prog}
+                                                    </Grid.Column>
+                                                    <Grid.Column textAlign="center">
 
-                                                    <Checkbox toggle checked={proj.isChecked} onChange={(event) => {
-                                                        axios.patch('http://localhost:8000/secured/project/ProjectDone/' + proj.id)
-                                                        axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
-                                                            .then(response => {
-                                                                var p = [];
-                                                                response.data.map((val) => {
-                                                                    if (val.done == 0) {
-                                                                        p.push(val)
-                                                                    }
+                                                        <Checkbox toggle checked={proj.isChecked} onChange={(event) => {
+                                                            axios.patch('http://localhost:8000/secured/project/ProjectDone/' + proj.id)
+                                                            axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+                                                                .then(response => {
+                                                                    var p = [];
+                                                                    response.data.map((val) => {
+                                                                        if (val.done == 0) {
+                                                                            p.push(val)
+                                                                        }
+                                                                    })
+                                                                    this.setState({
+                                                                        projects: p
+
+                                                                    })
+                                                                    this.setState({
+                                                                        projectsLength: p.length
+
+                                                                    })
                                                                 })
-                                                                this.setState({
-                                                                    projects: p
 
-                                                                })
-                                                            })
+                                                            proj.isChecked = true;
 
-                                                        proj.isChecked = true;
-
-                                                    }}
-                                                    />
-                                                </Grid.Column>
-                                            </Grid.Row>
-                                        </Grid>
-                                        </div>
-                                    })}
+                                                        }}
+                                                        />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                            </div>
+                                        })}
                                     </div>
                                 </CardBody>
                                 <CardFooter>
@@ -195,7 +211,7 @@ class Dashboard extends React.Component {
                                 </CardFooter>
                             </Card>
                         </Col>
-
+                       {/*###################################*/}
                         <Col md="4">
                             <Card>
                                 <CardHeader>
