@@ -21,7 +21,11 @@ class Dashboard extends React.Component {
         projectsLength: 0
 
     }
-
+     cardStyle = {
+        display: 'block',
+        width: '50vw',
+        transitionDuration: '0.3s',
+    }
     componentWillMount() {
 
         axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
@@ -175,7 +179,7 @@ class Dashboard extends React.Component {
                 }
             };
             return (<Item>
-                    <Card>
+                    <Card style={this.cardStyle}>
                         <CardHeader>
                             <CardTitle tag="h5">Project Statistics</CardTitle>
                             <p className="card-category">{x.name}</p>
