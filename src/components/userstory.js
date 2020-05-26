@@ -316,7 +316,7 @@ class UserStory extends Component {
     }
 
     deleteProperty(id) {
-        axios.delete('http://localhost:8000/UserStory/userStoryDelete/' + id).then((response) => {
+        axios.delete('http://localhost:8000/secured/UserStory/userStoryDelete/' + id).then((response) => {
                 window.location.reload();
 
             }

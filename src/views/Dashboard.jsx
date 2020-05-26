@@ -18,14 +18,19 @@ class Dashboard extends React.Component {
         projects: [],
         isChecked: false,
         storiesLength: 0,
-        projectsLength: 0
+        projectsLength: 0,
+        activity: [],
+        activities: []
+
 
     }
-     cardStyle = {
+    cardStyle = {
         display: 'block',
         width: '50vw',
         transitionDuration: '0.3s',
     }
+
+
     componentWillMount() {
 
         axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
@@ -44,10 +49,28 @@ class Dashboard extends React.Component {
                 this.setState({
                     projectsLength: this.state.projects.length
                 });
-                console.log(this.state)
 
             })
         ;
+        let activity = [];
+        axios.get(`http://localhost:8000/secured/activity/activities`)
+            .then(response => {
+                let activities = [];
+                response.data.map((element) => {
+                    activity.push(0);
+                    activities.push(element.name)
+                })
+                this.setState(
+                    {
+                        activities
+                    }
+                )
+                this.setState(
+                    {
+                        activity
+                    }
+                )
+            })
     }
 
     updateData() {
@@ -63,7 +86,6 @@ class Dashboard extends React.Component {
                 this.state.status.map((project) => {
                     var counting = 0;
                     var countComfirmed = 0;
-                    console.log(project)
 
                     project.backlog.map((backlog) => {
 
@@ -80,7 +102,7 @@ class Dashboard extends React.Component {
                     })
 
                     if (project.done == 0) {
-                        project.prog = 100 - countComfirmed * 100 / counting;
+                        project.prog = Math.round(100 - countComfirmed * 100 / counting);
                         array1.push(project)
                     }
                 })
@@ -99,6 +121,61 @@ class Dashboard extends React.Component {
             })
     }
 
+    func() {
+        var data = [];
+        var dashboardNASDAQChart = {};
+        var labels = [];
+        this.state.projects.map((proj1) => {
+            var len = this.state.activities.length;
+            var ar = [];
+            while (len--) {
+                ar.push(0)
+            }
+            this.state.activity = ar
+            var calCount = 0;
+            proj1.backlog.map((proj2) => {
+
+                proj2.user_stories.map((proj3) => {
+                    calCount++;
+                    if (proj3.is_comfirmed) {
+                        this.state.activity[this.state.activities.indexOf(proj3.activity.name)] += 1
+                    }
+                })
+            })
+            var color = ['#003f5c', '#ffa600', '#B03A2E', '#58508d', '#bc5090'];
+            var colorPicked = color[Math.floor(Math.random() * color.length)];
+            var oneLabel = {name: proj1, color: colorPicked}
+            labels.push(oneLabel);
+            var obj = {
+                label: this.state.activity,
+                data: this.state.activity,
+                fill: false,
+                borderColor: colorPicked,
+                backgroundColor: "transparent",
+                pointBorderColor: colorPicked,
+                pointRadius: 4,
+                pointHoverRadius: 4,
+                pointBorderWidth: 8
+            }
+            data.push(obj);
+        })
+
+        dashboardNASDAQChart = {
+            data: {
+                labels: this.state.activities,
+                datasets: data
+            },
+            options: {
+                legend: {
+                    display: false,
+                    position: "top"
+                }
+            }
+        };
+
+        return {dashboardNASDAQChart, labels}
+
+    }
 
     render() {
         let box = this.state.projects.map((x) => {
@@ -109,10 +186,10 @@ class Dashboard extends React.Component {
 
                 x1.user_stories.map((x2) => {
                     allLenght++;
-                    if (x2.is_comfirmed){
+                    if (x2.is_comfirmed) {
                         comfirmedLenght++
                     }
-                    if (x2.is_verified){
+                    if (x2.is_verified) {
                         verifiedLenght++
                     }
                 })
@@ -120,7 +197,7 @@ class Dashboard extends React.Component {
             const dashboardEmailStatisticsChart = {
                 data: canvas => {
                     return {
-                        labels: ["all", "Comfirmed", "Verified","Non-started"],
+                        labels: ["all", "Comfirmed", "Verified", "Non-started"],
                         datasets: [
                             {
                                 label: x.name,
@@ -128,7 +205,7 @@ class Dashboard extends React.Component {
                                 pointHoverRadius: 0,
                                 backgroundColor: ["#004c6d", "#346888", "#5886a5", "#7aa6c2"],
                                 borderWidth: 0,
-                                data: [allLenght, comfirmedLenght, verifiedLenght, allLenght-verifiedLenght]
+                                data: [allLenght, comfirmedLenght, verifiedLenght, allLenght - verifiedLenght]
                             }
                         ]
                     };
@@ -201,166 +278,172 @@ class Dashboard extends React.Component {
                 </Item>
             )
         })
-
         return (
             <>
-            <div className="content">
-                <Row>
-                    <Col md="6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle tag="h5">To validate</CardTitle>
-                                <p className="card-category">Last Campaign Performance</p>
-                            </CardHeader>
-                            <CardBody>
-                                <div className="stats">
-                                    {this.state.status.map((item1) => {
-                                        return <div><Grid divided='vertically'>
-                                            <Grid.Row columns={2} spacing={3}>
-                                                <Grid.Column textAlign="center">
-                                                    {item1.subject}
-                                                </Grid.Column>
-                                                <Grid.Column textAlign="center">
+                {console.log(this.func())}
+                <div className="content">
+                    <Row>
+                        <Col md="6">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle tag="h5">To validate</CardTitle>
+                                    <p className="card-category">Last Campaign Performance</p>
+                                </CardHeader>
+                                <CardBody>
+                                    <div className="stats">
+                                        {this.state.status.map((item1) => {
+                                            return <div><Grid divided='vertically'>
+                                                <Grid.Row columns={2} spacing={3}>
+                                                    <Grid.Column textAlign="center">
+                                                        {item1.subject}
+                                                    </Grid.Column>
+                                                    <Grid.Column textAlign="center">
 
-                                                    <Checkbox toggle checked={item1.isChecked}
-                                                              onChange={(event) => {
-                                                                  axios.patch('http://localhost:8000/secured/UserStory/PutIsComfirmed/' + item1.id, {isComfirmed: 1})
-                                                                  this.setState({
-                                                                      userstories: this.updateData()
+                                                        <Checkbox toggle checked={item1.isChecked}
+                                                                  onChange={(event) => {
+                                                                      axios.patch('http://localhost:8000/secured/UserStory/PutIsComfirmed/' + item1.id, {isComfirmed: 1})
+                                                                      this.setState({
+                                                                          userstories: this.updateData()
 
-                                                                  })
-                                                                  item1.isChecked = true;
+                                                                      })
+                                                                      item1.isChecked = true;
 
-                                                              }}
-                                                    />
-                                                </Grid.Column>
-                                            </Grid.Row>
-                                        </Grid>
-                                        </div>
-                                    })}
-                                </div>
-                            </CardBody>
-                            <CardFooter>
-                                <div className="legend">
-                                    <i className="fa fa-circle text-primary"/> Opened{" "}
-                                    <i className="fa fa-circle text-warning"/> Read{" "}
-                                    <i className="fa fa-circle text-danger"/> Deleted{" "}
-                                    <i className="fa fa-circle text-gray"/> Unopened
-                                </div>
-                                <hr/>
-                                <div className="stats">
-                                    <i className="fa fa-calendar"/> Number of userstories {this.state.storiesLength}
-                                </div>
-                            </CardFooter>
-                        </Card>
-                    </Col>
+                                                                  }}
+                                                        />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                            </div>
+                                        })}
+                                    </div>
+                                </CardBody>
+                                <CardFooter>
+                                    <div className="legend">
+                                        <i className="fa fa-circle text-primary"/> Opened{" "}
+                                        <i className="fa fa-circle text-warning"/> Read{" "}
+                                        <i className="fa fa-circle text-danger"/> Deleted{" "}
+                                        <i className="fa fa-circle text-gray"/> Unopened
+                                    </div>
+                                    <hr/>
+                                    <div className="stats">
+                                        <i className="fa fa-calendar"/> Number of userstories {this.state.storiesLength}
+                                    </div>
+                                </CardFooter>
+                            </Card>
+                        </Col>
 
-                    <Col md="6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle tag="h5">Projects to close</CardTitle>
-                                <p className="card-category">Last Campaign Performance</p>
-                            </CardHeader>
-                            <CardBody>
-                                <div className="stats">
-                                    {this.state.projects.map((proj) => {
-                                        return <div><Grid divided='vertically'>
-                                            <Grid.Row columns={3} spacing={3}>
-                                                <Grid.Column textAlign="center">
-                                                    {proj.name}
-                                                </Grid.Column>
-                                                <Grid.Column textAlign="center">
-                                                    {isNaN(proj.prog) ? 0 : proj.prog}%
-                                                </Grid.Column>
-                                                <Grid.Column textAlign="center">
+                        <Col md="6">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle tag="h5">Projects to close</CardTitle>
+                                    <p className="card-category">Last Campaign Performance</p>
+                                </CardHeader>
+                                <CardBody>
+                                    <div className="stats">
+                                        {this.state.projects.map((proj) => {
+                                            return <div><Grid divided='vertically'>
+                                                <Grid.Row columns={3} spacing={3}>
+                                                    <Grid.Column textAlign="center">
+                                                        {proj.name}
+                                                    </Grid.Column>
+                                                    <Grid.Column textAlign="center">
+                                                        {isNaN(proj.prog) ? 0 : proj.prog}%
+                                                    </Grid.Column>
+                                                    <Grid.Column textAlign="center">
 
-                                                    <Checkbox toggle checked={proj.isChecked} onChange={(event) => {
-                                                        axios.patch('http://localhost:8000/secured/project/ProjectDone/' + proj.id)
-                                                        axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
-                                                            .then(response => {
-                                                                var p = [];
-                                                                response.data.map((val) => {
-                                                                    if (val.done == 0) {
-                                                                        p.push(val)
-                                                                    }
+                                                        <Checkbox toggle checked={proj.isChecked} onChange={(event) => {
+                                                            axios.patch('http://localhost:8000/secured/project/ProjectDone/' + proj.id)
+                                                            axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+                                                                .then(response => {
+                                                                    var p = [];
+                                                                    response.data.map((val) => {
+                                                                        if (val.done == 0) {
+                                                                            p.push(val)
+                                                                        }
+                                                                    })
+                                                                    this.setState({
+                                                                        projects: p
+
+                                                                    })
+                                                                    this.setState({
+                                                                        projectsLength: p.length
+
+                                                                    })
                                                                 })
-                                                                this.setState({
-                                                                    projects: p
 
-                                                                })
-                                                                this.setState({
-                                                                    projectsLength: p.length
+                                                            proj.isChecked = true;
 
-                                                                })
-                                                            })
+                                                        }}
+                                                        />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                            </div>
+                                        })}
+                                    </div>
+                                </CardBody>
+                                <CardFooter>
+                                    <div className="legend">
+                                        <i className="fa fa-circle text-primary"/> Opened{" "}
+                                        <i className="fa fa-circle text-warning"/> Read{" "}
+                                        <i className="fa fa-circle text-danger"/> Deleted{" "}
+                                        <i className="fa fa-circle text-gray"/> Unopened
+                                    </div>
+                                    <hr/>
+                                    <div className="stats">
+                                        <i className="fa fa-calendar"/> Number of projects {this.state.projectsLength}
+                                    </div>
+                                </CardFooter>
+                            </Card>
+                        </Col>
+                        {/*###################################*/}
+                        <Col md="12">
+                            <Carousel itemsToShow={1}>
 
-                                                        proj.isChecked = true;
+                                {box}
 
-                                                    }}
-                                                    />
-                                                </Grid.Column>
-                                            </Grid.Row>
-                                        </Grid>
-                                        </div>
-                                    })}
-                                </div>
-                            </CardBody>
-                            <CardFooter>
-                                <div className="legend">
-                                    <i className="fa fa-circle text-primary"/> Opened{" "}
-                                    <i className="fa fa-circle text-warning"/> Read{" "}
-                                    <i className="fa fa-circle text-danger"/> Deleted{" "}
-                                    <i className="fa fa-circle text-gray"/> Unopened
-                                </div>
-                                <hr/>
-                                <div className="stats">
-                                    <i className="fa fa-calendar"/> Number of projects {this.state.projectsLength}
-                                </div>
-                            </CardFooter>
-                        </Card>
-                    </Col>
-                    {/*###################################*/}
-                    <Col md="12">
-                        <Carousel itemsToShow={1}>
+                            </Carousel>
 
-                            {box}
+                        </Col>
+                        {/*###################################*/}
 
-                    </Carousel>
+                        <Col md="12">
+                            <Card className="card-chart">
+                                <CardHeader>
+                                    <CardTitle tag="h5">NASDAQ: AAPL</CardTitle>
+                                    <p className="card-category">Line Chart with Points</p>
+                                </CardHeader>
+                                <CardBody>
+                                    {console.log(this.func())}
+                                    <Line
+                                        data={this.func().dashboardNASDAQChart.data}
+                                        options={this.func().dashboardNASDAQChart.options}
+                                        width={400}
+                                        height={100}
+                                    />
+                                </CardBody>
+                                <CardFooter>
+                                    <div className="chart-legend">
+                                        {this.func().labels.map((one) => {
+                                            return (<><i className="fa fa-circle" style={{
+                                                color: one.color,
+                                            }}/>{one.name.name}</>)
+                                        })}
 
-                </Col>
+                                    </div>
+                                    <hr/>
+                                    <div className="card-stats">
+                                        <i className="fa fa-check"/> Data information certified
+                                    </div>
+                                </CardFooter>
+                            </Card>
+                        </Col>
+                    </Row>
+                </div>
 
-                <Col md="8">
-                    <Card className="card-chart">
-                        <CardHeader>
-                            <CardTitle tag="h5">NASDAQ: AAPL</CardTitle>
-                            <p className="card-category">Line Chart with Points</p>
-                        </CardHeader>
-                        <CardBody>
-                            <Line
-                                data={dashboardNASDAQChart.data}
-                                options={dashboardNASDAQChart.options}
-                                width={400}
-                                height={100}
-                            />
-                        </CardBody>
-                        <CardFooter>
-                            <div className="chart-legend">
-                                <i className="fa fa-circle text-info"/> Tesla Model S{" "}
-                                <i className="fa fa-circle text-warning"/> BMW 5 Series
-                            </div>
-                            <hr/>
-                            <div className="card-stats">
-                                <i className="fa fa-check"/> Data information certified
-                            </div>
-                        </CardFooter>
-                    </Card>
-                </Col>
-            </Row>
-            </div>
-
-    </>
-    )
-        ;
+            </>
+        )
+            ;
     }
 }
 
