@@ -125,6 +125,7 @@ class Dashboard extends React.Component {
         var data = [];
         var dashboardNASDAQChart = {};
         var labels = [];
+        var i = 0;
         this.state.projects.map((proj1) => {
             var len = this.state.activities.length;
             var ar = [];
@@ -142,8 +143,9 @@ class Dashboard extends React.Component {
                     }
                 })
             })
-            var color = ['#003f5c', '#ffa600', '#B03A2E', '#58508d', '#bc5090'];
-            var colorPicked = color[Math.floor(Math.random() * color.length)];
+            var color = ['#003f5c', '#ffa600', '#b03a2e', '#f95d6a', '#ff7c43', '#58508d', '#bc5090'];
+            var colorPicked = color[i];
+            i++;
             var oneLabel = {name: proj1, color: colorPicked}
             labels.push(oneLabel);
             var obj = {
