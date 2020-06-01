@@ -6,6 +6,7 @@ export default class Gantt extends Component {
     componentDidMount() {
         gantt.config.xml_date = "%Y-%m-%d %H:%i";
         const {tasks} = this.props;
+        gantt.config.readonly = true;
         gantt.init(this.ganttContainer);
         gantt.parse(tasks);
       

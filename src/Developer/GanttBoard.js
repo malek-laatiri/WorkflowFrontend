@@ -31,16 +31,28 @@ export default class GanttBoard extends React.Component {
             data: '', links: ''
         };
         if (this.state.backlog) {
+
             let arr = [];
             let linksarr = [];
+            let count=0;
+            let countComfirmed=0;
+
             this.state.backlog.forEach((element) => {
+                element.user_stories.map((x)=>{
+                    count++
+                    if (x.is_comfirmed){
+                        countComfirmed++
+                    }
+
+                })
                 let JSONitem = {
-                    id: element.rank,
+                    id: element.id,
                     text: element.title,
                     start_date: element.startdate,
                     duration: element.estimated_time,
-                    progress: 0.6,
+                    progress: (countComfirmed*100/count)/100,
                 };
+                console.log(JSONitem)
                 arr.push(JSONitem)
             });
             JSONdata.data = arr;

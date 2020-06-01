@@ -25,6 +25,7 @@ class Backlog extends Component {
             rank: '',
             estimatedTime: '',
             sprint: '',
+            startdate:'',
             project: ''
 
         },
@@ -93,7 +94,7 @@ class Backlog extends Component {
                 let {backlogs} = this.state;
                 backlogs.push(response.data);
                 this.setState({
-                    backlogs, newBacklogModal: false, newBacklogData: {
+                    backlogs, editBacklogModal: false, editBacklogData: {
                         title: '',
                         rank: '',
                         estimatedTime: '',
@@ -108,9 +109,9 @@ class Backlog extends Component {
         );
     }
 
-    editProperty(id, title, estimatedTime, sprint, rank, project) {
+    editProperty(id, title, estimatedTime, sprint, rank, project,startdate) {
         this.setState({
-            editBacklogData: {id, title, estimatedTime, sprint, rank, project},
+            editBacklogData: {id, title, estimatedTime, sprint, rank, project,startdate},
             editBacklogModal: !this.state.editBacklogModal
         });
     }
@@ -267,6 +268,17 @@ class Backlog extends Component {
                                                                    this.setState({editBacklogData});
 
                                                                }}/>
+                                                        <label htmlFor="startDate">startdate</label>
+
+                                                        <Input id="startDate" type="number"
+                                                               value={this.state.editBacklogData.startdate}
+                                                               onChange={(e) => {
+                                                                   let {editBacklogData} = this.state;
+                                                                   editBacklogData.startdate = e.target.value;
+                                                                   this.setState({editBacklogData});
+
+                                                               }}/>
+
                                                         <label htmlFor="dueDate">sprint</label>
 
                                                         <Input id="dueDate" type="number"

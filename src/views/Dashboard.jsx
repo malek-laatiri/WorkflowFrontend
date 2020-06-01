@@ -6,10 +6,11 @@ import {Card, CardBody, CardFooter, CardHeader, CardTitle, Col, ModalBody, Row} 
 // core components
 import {dashboardEmailStatisticsChart, dashboardNASDAQChart} from "variables/charts.jsx";
 import axios from 'axios';
-import {getUser} from "../components/Common";
+import {createNotification, getUser} from "../components/Common";
 import {Checkbox, Grid, Item} from "semantic-ui-react";
 import Carousel from "react-elastic-carousel";
 import 'assets/css/index.css';
+import {NotificationContainer} from "react-notifications";
 
 class Dashboard extends React.Component {
     state = {
@@ -282,7 +283,7 @@ class Dashboard extends React.Component {
         })
         return (
             <>
-                {console.log(this.func())}
+                <NotificationContainer/>
                 <div className="content">
                     <Row>
                         <Col md="6">
@@ -309,6 +310,8 @@ class Dashboard extends React.Component {
 
                                                                       })
                                                                       item1.isChecked = true;
+                                                                      createNotification('info', "This userstory is comfirmed !")
+
 
                                                                   }}
                                                         />
@@ -374,6 +377,8 @@ class Dashboard extends React.Component {
                                                                 })
 
                                                             proj.isChecked = true;
+                                                            createNotification('info', "This project is done !")
+
 
                                                         }}
                                                         />
@@ -416,7 +421,6 @@ class Dashboard extends React.Component {
                                     <p className="card-category">Line Chart with Points</p>
                                 </CardHeader>
                                 <CardBody>
-                                    {console.log(this.func())}
                                     <Line
                                         data={this.func().dashboardNASDAQChart.data}
                                         options={this.func().dashboardNASDAQChart.options}
