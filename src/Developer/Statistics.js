@@ -120,19 +120,18 @@ class Statistics extends Component {
                 backgroundColor: ['#003f5c', '#bc5090', '#58508d', '#bc5090', '#58508d']
             }],
             labels: [
-                'Red',
-                'Yellow',
-                'Blue'
+                'Done',
+                'All Userstories'
             ]
         };
         let dataRader = {
             datasets: [{
-                label: 'Red',
+                label: 'Project Progress',
                 data: this.state.activity,
                 Color: ['#003f5c'],
                 borderCapStyle: ['#ffa600'],
                 borderColor: ['#B03A2E'],
-                pointBackgroundColor: ['#003f5c', '#ffa600', '#B03A2E', '#58508d', '#bc5090'],
+                pointBackgroundColor: ['#003f5c', '#ffa600', '#B03A2E', '#58508d', '#bc5090','#ff7c43','#a05195', '#d45087', '#f95d6a'],
                 pointBorderColor: ['#bc5090'],
                 borderWidth: "2px"
             }],

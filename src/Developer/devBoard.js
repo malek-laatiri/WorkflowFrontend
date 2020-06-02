@@ -349,8 +349,7 @@ export default class DevBoard extends React.Component {
                                 <Grid.Column spacing={3}>
                                     {this.state.userStroyShow.comments ?
                                         this.state.userStroyShow.comments.map(home =>
-                                            <div>{home.written_by.username}{moment(home.written_at, "YYYYMMDD").fromNow()
-                                            } {home.content}</div>)
+                                            <div>{home.written_by.username} {moment(home.written_at, "YYYYMMDD").fromNow()}<br/> {home.content}</div>)
                                         : <div>There's no comments</div>}
                                 </Grid.Column>
                             </Grid.Row>
@@ -371,12 +370,15 @@ export default class DevBoard extends React.Component {
                                                            }).then(response => {
                                                                this.createNotification('info', "you Have Comment Has Been Added.")
                                                            })
-
+                                                           this.setState({
+                                                               newProjectModal: !this.state.newProjectModal
+                                                           })
                                                        } else {
                                                            this.createNotification('error', "Can't Be Empty")
 
                                                        }
                                                    }
+
                                                }
 
                                                }
@@ -398,13 +400,13 @@ export default class DevBoard extends React.Component {
 
                             <Grid.Row columns={2}>
                                 <Grid.Column textAlign="center">
-                                    Asigned to:
+                                    Assigned to:
                                 </Grid.Column>
                                 <Grid.Column>
                                     {this.state.userStroyShow.asigned_to ?
                                         <Grid.Column>
                                             <Grid.Row columns={2}>
-                                                <Avatar>N</Avatar>
+                                                <Avatar>{this.state.userStroyShow.asigned_to.username.charAt(0)}</Avatar>
                                                 {this.state.userStroyShow.asigned_to.username}
                                             </Grid.Row>
 
