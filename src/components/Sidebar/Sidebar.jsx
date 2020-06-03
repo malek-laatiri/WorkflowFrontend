@@ -55,7 +55,7 @@ class Sidebar extends React.Component {
                     <a
                         className="simple-text logo-normal"
                     >
-                        DOTit
+                        Kanban 看板
                     </a>
                 </div>
                 <div className="sidebar-wrapper" ref={this.sidebar}>

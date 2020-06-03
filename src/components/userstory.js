@@ -366,8 +366,8 @@ class UserStory extends Component {
                                             {/*POST*/}
                                             <Modal isOpen={this.state.newUserStoryModal}
                                                    toggle={this.toggleNewBookModal.bind(this)}>
-                                                <ModalHeader toggle={this.toggleNewBookModal.bind(this)}>add new
-                                                    property</ModalHeader>
+                                                <ModalHeader toggle={this.toggleNewBookModal.bind(this)}>Add new
+                                                    UserStory</ModalHeader>
                                                 <ModalBody>
                                                     <FormGroup className="mb-3">
                                                         <label htmlFor="name">subject</label>
