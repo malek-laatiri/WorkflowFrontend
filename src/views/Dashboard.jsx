@@ -323,12 +323,6 @@ class Dashboard extends React.Component {
                                     </div>
                                 </CardBody>
                                 <CardFooter>
-                                    <div className="legend">
-                                        <i className="fa fa-circle text-primary"/> Opened{" "}
-                                        <i className="fa fa-circle text-warning"/> Read{" "}
-                                        <i className="fa fa-circle text-danger"/> Deleted{" "}
-                                        <i className="fa fa-circle text-gray"/> Unopened
-                                    </div>
                                     <hr/>
                                     <div className="stats">
                                         <i className="fa fa-calendar"/> Number of userstories {this.state.storiesLength}
@@ -376,7 +370,7 @@ class Dashboard extends React.Component {
                                                                     })
                                                                 })
 
-                                                            proj.isChecked = true;
+                                                            proj.isChecked = false;
                                                             createNotification('info', "This project is done !")
 
 
