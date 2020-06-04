@@ -89,10 +89,12 @@ export default class Calendar extends React.Component {
             <>
                 {this.func() ?
                     <FullCalendar defaultView="dayGridMonth"
-                                  plugins={[dayGridPlugin, interactionPlugin,listPlugin]}
+                                  plugins={[dayGridPlugin, interactionPlugin, listPlugin]}
                                   weekends={true}
                                   selectable={true}
                                   selectHelper={true}
+                                  height={920}
+                                  firstDay={1}
                                   header={{
                                       left: 'prevYear prev today next nextYear  ',
                                       center: 'title',
@@ -105,7 +107,7 @@ export default class Calendar extends React.Component {
                                   }}
                                   dateClick={this.handleDateClick}
                                   eventClick={function (info) {
-                                      console.log(info.event.extendedProps);
+                                      alert(info.event.extendedProps);
                                       // {description: "Lecture", department: "BioChemistry"}
                                   }}
                                   events={this.func()}/>
