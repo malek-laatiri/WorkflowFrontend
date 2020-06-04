@@ -2,6 +2,7 @@ import React from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
+import listPlugin from '@fullcalendar/list';
 
 import 'assets/scss/main.scss';
 import axios from "axios";
@@ -32,7 +33,7 @@ export default class Calendar extends React.Component {
     }
 
     func() {
-        let arr=[]
+        let arr = []
         this.state.currentprojects.map((project) => {
             let dataStartEndPrototype = {
                 title: project.name,
@@ -57,21 +58,21 @@ export default class Calendar extends React.Component {
                         },
                         description: ''
                     }
-                arr.push(dataStartEndPrototype)
-                backlog.user_stories.map((userStory) => {
-                    if (userStory.asigned_to.username==(getUser().username)){
-                        let dataStartEndPrototypex = {
-                            title: userStory.subject,
-                            date: userStory.due_date,
-                            color: "#B03A2E",
-                            textColor: 'white',
-                            extendedProps: {
-                                text: ''
-                            },
-                            description: ''
+                    arr.push(dataStartEndPrototype)
+                    backlog.user_stories.map((userStory) => {
+                        if (userStory.asigned_to.username == (getUser().username)) {
+                            let dataStartEndPrototypex = {
+                                title: userStory.subject,
+                                date: userStory.due_date,
+                                color: "#B03A2E",
+                                textColor: 'white',
+                                extendedProps: {
+                                    text: ''
+                                },
+                                description: ''
+                            }
+                            arr.push(dataStartEndPrototypex)
                         }
-                        arr.push(dataStartEndPrototypex)
-                    }
 
 
                     })
@@ -86,14 +87,21 @@ export default class Calendar extends React.Component {
         console.log(this.func())
         return (
             <>
-                {this.func()?
+                {this.func() ?
                     <FullCalendar defaultView="dayGridMonth"
-                                  plugins={[dayGridPlugin, interactionPlugin]}
+                                  plugins={[dayGridPlugin, interactionPlugin,listPlugin]}
                                   weekends={true}
+                                  selectable={true}
+                                  selectHelper={true}
                                   header={{
                                       left: 'prevYear prev today next nextYear  ',
                                       center: 'title',
-                                      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                                      right: 'dayGridMonth,listWeek'
+                                  }}
+                                  businessHours={{
+                                      dow: [1, 2, 3, 4, 5], // Monday - Friday
+                                      start: '07:30', // business days' starting hour
+                                      end: '17:00', // business days' ending time
                                   }}
                                   dateClick={this.handleDateClick}
                                   eventClick={function (info) {
@@ -101,7 +109,7 @@ export default class Calendar extends React.Component {
                                       // {description: "Lecture", department: "BioChemistry"}
                                   }}
                                   events={this.func()}/>
-                :
+                    :
                     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
                         <Loader
                             type="Bars"
@@ -111,7 +119,7 @@ export default class Calendar extends React.Component {
 
                         />
                     </div>}
-                </>
+            </>
 
         )
     }
