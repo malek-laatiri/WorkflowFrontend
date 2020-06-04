@@ -206,7 +206,6 @@ export default class DevBoard extends React.Component {
                             <div className='row'>
                                 {this.state.userStroyShow.subject}
                             </div>
-                            <div className='row'>
                                 {this.state.userStroyShow.label ?
                                     <Tooltip title={this.state.userStroyShow.label.name}>
                                         <p style={{
@@ -215,7 +214,6 @@ export default class DevBoard extends React.Component {
                                         }} className="numberCircle"></p>
                                     </Tooltip> :
                                     <div></div>}
-                            </div>
                         </div>
                     </ModalHeader>
                     <ModalBody>

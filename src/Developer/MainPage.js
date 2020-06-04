@@ -10,6 +10,7 @@ import {Col} from "react-bootstrap";
 import GanttBoard from "./GanttBoard";
 import DevBoard from "./devBoard";
 import Statistics from "./Statistics";
+import Calendar from "./Calendar";
 
 class MainPage extends Component {
     constructor(props) {
@@ -65,7 +66,14 @@ class MainPage extends Component {
                                             Progress
                                         </NavText>
                                     </NavItem>
-
+                                    <NavItem eventKey="Calendar">
+                                        <NavIcon>
+                                            <i className="fas fa-calendar-alt" style={{fontSize: '1.75em'}}></i>
+                                        </NavIcon>
+                                        <NavText>
+                                            Calendar
+                                        </NavText>
+                                    </NavItem>
 
                                     <NavItem eventKey="Statistic">
                                         <NavIcon>
@@ -103,6 +111,7 @@ class MainPage extends Component {
                                 <Route path="/Progress" exact component={props => <div className="content"><SideNav.Toggle/><Row md="12"><Col><GanttBoard/></Col></Row></div>}/>
                                <Route path="/Statistic" exact component={props => <div className="content"><SideNav.Toggle/><Row md="12"><Col><Statistics/></Col></Row></div>}/>
 
+                                <Route path="/Calendar" exact component={props => <div className="content"><SideNav.Toggle/><Row md="12"><Col><Calendar/></Col></Row></div>}/>
 
 
                                 <Route path="/changePassword" exact component={props => <PasswordUpdate/>}/>
