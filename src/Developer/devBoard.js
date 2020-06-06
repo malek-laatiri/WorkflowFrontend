@@ -175,21 +175,13 @@ export default class DevBoard extends React.Component {
     };
     onFileUpload = () => {
         const formData = new FormData();
-        formData.append(
-            "myFile",
-            this.state.selectedFile,
-            this.state.selectedFile.name
-        );
-        console.log(formData);
+        formData.append("imageFile", this.state.selectedFile);
+        formData.append("imageName", this.state.selectedFile.name);
+        formData.append("imageSize", this.state.selectedFile.size);
+        formData.append("imageType", this.state.selectedFile.type);
 
-        let file = {
-            'imageName': this.state.selectedFile.name,
-            'imageSize': this.state.selectedFile.size,
-            'imageFile': this.state.selectedFile,
-            'imageType': this.state.selectedFile.type
 
-        }
-        axios.post("http://localhost:8000/secured/files/uploadFile", file);
+        axios.post("http://localhost:8000/secured/files/uploadFile", formData);
     };
 
     render() {
