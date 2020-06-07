@@ -36,7 +36,7 @@ export default class DevBoard extends React.Component {
         selectedOption: null,
         selectedFile: null,
         isChecked: false,
-        JSONData:''
+        JSONData: ''
 
     };
 
@@ -63,7 +63,7 @@ export default class DevBoard extends React.Component {
             })
         ;
         this.setState({
-            JSONData:this.functiontry()
+            JSONData: this.functiontry()
         })
         console.log(this.state.JSONData)
     }
@@ -175,13 +175,18 @@ export default class DevBoard extends React.Component {
     };
     onFileUpload = () => {
         const formData = new FormData();
-        formData.append("imageFile", this.state.selectedFile);
+        formData.append("upload[imageFile]", this.state.selectedFile);
         formData.append("imageName", this.state.selectedFile.name);
         formData.append("imageSize", this.state.selectedFile.size);
         formData.append("imageType", this.state.selectedFile.type);
 
 
-        axios.post("http://localhost:8000/secured/files/uploadFile", formData);
+        axios.post("http://localhost:8000/secured/files/uploadFile", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
+        );
     };
 
     render() {
@@ -198,14 +203,14 @@ export default class DevBoard extends React.Component {
                             <div className='row'>
                                 {this.state.userStroyShow.subject}
                             </div>
-                                {this.state.userStroyShow.label ?
-                                    <Tooltip title={this.state.userStroyShow.label.name}>
-                                        <p style={{
-                                            backgroundColor: this.state.userStroyShow.label.color,
-                                            fontSize: 12
-                                        }} className="numberCircle"></p>
-                                    </Tooltip> :
-                                    <div></div>}
+                            {this.state.userStroyShow.label ?
+                                <Tooltip title={this.state.userStroyShow.label.name}>
+                                    <p style={{
+                                        backgroundColor: this.state.userStroyShow.label.color,
+                                        fontSize: 12
+                                    }} className="numberCircle"></p>
+                                </Tooltip> :
+                                <div></div>}
                         </div>
                     </ModalHeader>
                     <ModalBody>
@@ -339,7 +344,8 @@ export default class DevBoard extends React.Component {
                                 <Grid.Column spacing={3}>
                                     {this.state.userStroyShow.comments ?
                                         this.state.userStroyShow.comments.map(home =>
-                                            <div>{home.written_by.username} {moment(home.written_at, "YYYYMMDD").fromNow()}<br/> {home.content}</div>)
+                                            <div>{home.written_by.username} {moment(home.written_at, "YYYYMMDD").fromNow()}<br/> {home.content}
+                                            </div>)
                                         : <div>There's no comments</div>}
                                 </Grid.Column>
                             </Grid.Row>
