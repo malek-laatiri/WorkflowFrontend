@@ -174,19 +174,35 @@ export default class DevBoard extends React.Component {
 
     };
     onFileUpload = () => {
-        const formData = new FormData();
-        formData.append("upload[imageFile]", this.state.selectedFile);
-        formData.append("imageName", this.state.selectedFile.name);
-        formData.append("imageSize", this.state.selectedFile.size);
-        formData.append("imageType", this.state.selectedFile.type);
+        axios.post('http://localhost:8000/secured/comments/newComment/' + this.state.userStroyShow.id, {
+            content: this.state.newCommentData.content,
+            writtenBy: getUser().id
+        }).then(response => {
+            console.log(response)
+            const formData = new FormData();
+            formData.append("upload[imageFile]", this.state.selectedFile);
+            formData.append("imageName", this.state.selectedFile.name);
+            formData.append("imageSize", this.state.selectedFile.size);
+            formData.append("imageType", this.state.selectedFile.type);
+            formData.append("comment", response.data.data);
 
 
-        axios.post("http://localhost:8000/secured/files/uploadFile", formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            }
-        );
+
+            axios.post("http://localhost:8000/secured/files/uploadFile", formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+
+            );
+            this.createNotification('info', "you Have Comment Has Been Added.")
+        })
+        this.setState({
+            newProjectModal: !this.state.newProjectModal
+        })
+
+
+
     };
 
     render() {
@@ -344,7 +360,7 @@ export default class DevBoard extends React.Component {
                                 <Grid.Column spacing={3}>
                                     {this.state.userStroyShow.comments ?
                                         this.state.userStroyShow.comments.map(home =>
-                                            <div>{home.written_by.username} {moment(home.written_at, "YYYYMMDD").fromNow()}<br/> {home.content}
+                                            <div>{home.written_by.username} {moment(home.written_at).fromNow()}<br/> {home.content}
                                             </div>)
                                         : <div>There's no comments</div>}
                                 </Grid.Column>

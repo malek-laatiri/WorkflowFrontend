@@ -4,6 +4,7 @@ import Gantt from "./Gantt";
 import Loader from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 import Toolbar from "./Toolbar";
+
 export default class GanttBoard extends React.Component {
     state = {
         projects: [],
@@ -26,6 +27,7 @@ export default class GanttBoard extends React.Component {
             currentZoom: zoom
         });
     }
+
     functiontry() {
         let JSONdata = {
             data: '', links: ''
@@ -34,27 +36,40 @@ export default class GanttBoard extends React.Component {
 
             let arr = [];
             let linksarr = [];
-            let count=0;
-            let countComfirmed=0;
+            let count = 0;
+            let countComfirmed = 0;
+            let countx = 0;
 
             this.state.backlog.forEach((element) => {
-                element.user_stories.map((x)=>{
-                    count++
-                    if (x.is_comfirmed){
-                        countComfirmed++
-                    }
-
-                })
+                let storiesArr = [];
+                countx++
                 let JSONitem = {
-                    id: element.id,
+                    id: countx,
                     text: element.title,
                     start_date: element.startdate,
                     duration: element.estimated_time,
-                    progress: (countComfirmed*100/count)/100,
+                    progress: '',
+                    open: true
                 };
-                console.log(JSONitem)
+                element.user_stories.map((x) => {
+                    countx++
+                    count++
+                    if (x.is_comfirmed) {
+                        countComfirmed++
+                    }
+                    let JSONElem = {
+                        id: countx, text: x.subject, start_date: x.due_date,
+                        duration: x.estimated_time, progress: x.progress, parent: JSONitem.id
+                    }
+                    JSONitem.progress=(countComfirmed * 100 / count) / 100;
+
+                    arr.push(JSONElem)
+                })
                 arr.push(JSONitem)
+                console.log(JSONdata)
+
             });
+
             JSONdata.data = arr;
             JSONdata.data.forEach(function (element, index) {
                 if (index !== JSONdata.data.length - 1) {
@@ -74,28 +89,28 @@ export default class GanttBoard extends React.Component {
         return <>
             <SideNav.Toggle/>
 
-                {this.functiontry().data.length ?
+            {this.functiontry().data.length ?
 
-                        <div className="gantt-container">
-                            <div className="zoom-bar">
-                                <Toolbar
-                                    zoom={this.state.currentZoom}
-                                    onZoomChange={this.handleZoomChange}
-                                />
-                            <Gantt tasks={this.functiontry()}
-                                   zoom={this.state.currentZoom}
-                            />
-
-                        </div>
-                    </div>
-                    :   <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
-                        <Loader
-                            type="Bars"
-                            color="#00BFFF"
-                            height={100}
-                            width={100}
+                <div className="gantt-container">
+                    <div className="zoom-bar">
+                        <Toolbar
+                            zoom={this.state.currentZoom}
+                            onZoomChange={this.handleZoomChange}
                         />
-                    </div>}
+                        <Gantt tasks={this.functiontry()}
+                               zoom={this.state.currentZoom}
+                        />
+
+                    </div>
+                </div>
+                : <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+                    <Loader
+                        type="Bars"
+                        color="#00BFFF"
+                        height={100}
+                        width={100}
+                    />
+                </div>}
 
         </>
 
