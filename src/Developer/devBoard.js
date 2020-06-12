@@ -187,20 +187,17 @@ export default class DevBoard extends React.Component {
             formData.append("comment", response.data.data);
 
 
-
             axios.post("http://localhost:8000/secured/files/uploadFile", formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
                 }
-
             );
             this.createNotification('info', "you Have Comment Has Been Added.")
         })
         this.setState({
             newProjectModal: !this.state.newProjectModal
         })
-
 
 
     };
@@ -361,6 +358,17 @@ export default class DevBoard extends React.Component {
                                     {this.state.userStroyShow.comments ?
                                         this.state.userStroyShow.comments.map(home =>
                                             <div>{home.written_by.username} {moment(home.written_at).fromNow()}<br/> {home.content}
+                                                <br/>
+                                                {home.files ?
+                                                    home.files.map(files =>
+                                                        <a href={`http://localhost:8000/secured/files/download/${files.id}`}>download</a>
+
+
+                                                )
+                                                :
+                                                <div></div>
+                                                }
+
                                             </div>)
                                         : <div>There's no comments</div>}
                                 </Grid.Column>
