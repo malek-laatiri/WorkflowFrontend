@@ -3,6 +3,8 @@ import {Button, Card, CardBody, Col, Input, Modal, ModalBody, ModalFooter, Modal
 import axios from 'axios';
 import {FormGroup} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import {createNotification} from "./Common";
+import {NotificationContainer} from "react-notifications";
 
 let options = [];
 
@@ -17,7 +19,7 @@ class Backlog extends Component {
             rank: '',
             estimatedTime: '',
             sprint: '',
-            startdate:'',
+            startdate: '',
             project: ''
         },
         editBacklogData: {
@@ -25,7 +27,7 @@ class Backlog extends Component {
             rank: '',
             estimatedTime: '',
             sprint: '',
-            startdate:'',
+            startdate: '',
             project: ''
 
         },
@@ -35,18 +37,17 @@ class Backlog extends Component {
 
 
     componentWillMount() {
-        axios.get(`http://localhost:8000/secured/Backlog/BacklogList/` +localStorage.getItem('projectid'))
+        axios.get(`http://localhost:8000/secured/Backlog/BacklogList/` + localStorage.getItem('projectid'))
             .then(response => {
                 this.setState({
                     backlogs: response.data
                 })
-            }).then(console.log(this.state))
+            })
         ;
     }
 
 
     toggleNewBookModal() {
-        console.log("click");
         this.setState({
             newBacklogModal: !this.state.newBacklogModal
         })
@@ -62,9 +63,7 @@ class Backlog extends Component {
 
 
     addPriority() {
-        console.log(this.state.newBacklogData);
         this.state.newBacklogData.project = localStorage.getItem('projectid');
-        console.log(this.state.newBacklogData.project);
         let {newBacklogData} = this.state;
         //newProjectData.Team = this.state.selectedOption;
         this.setState({newBacklogData});
@@ -77,7 +76,7 @@ class Backlog extends Component {
                         title: '',
                         rank: '',
                         estimatedTime: '',
-                        startdate:'',
+                        startdate: '',
                         sprint: '',
                         project: ''
                     }
@@ -98,20 +97,19 @@ class Backlog extends Component {
                         title: '',
                         rank: '',
                         estimatedTime: '',
-                        startdate:'',
+                        startdate: '',
                         sprint: '',
                         project: ''
                     }
                 });
-                console.log(response.data);
 
             }
         );
     }
 
-    editProperty(id, title, estimatedTime, sprint, rank, project,startdate) {
+    editProperty(id, title, estimatedTime, sprint, rank, project, startdate) {
         this.setState({
-            editBacklogData: {id, title, estimatedTime, sprint, rank, project,startdate},
+            editBacklogData: {id, title, estimatedTime, sprint, rank, project, startdate},
             editBacklogModal: !this.state.editBacklogModal
         });
     }
@@ -123,14 +121,27 @@ class Backlog extends Component {
         )
     }
 
-    routeChange(id) {
-        let path = `/admin/UserStory/userStoryList/` + id;
+    routeChange(backlog) {
+        let path = `/admin/UserStory/userStoryList/` + backlog.id;
         this.props.history.push(path);
-        localStorage.setItem('backlogid', id);
+        localStorage.setItem('backlogid',backlog.id);
+        localStorage.setItem('backlogdata', JSON.stringify(backlog));
+    }
 
-        console.log(path);
-        console.log(this.props.history);
+    checkDate(dateBacklog, dateStart, dateEnd) {
+        var backlog=JSON.parse(localStorage.getItem('projectdata')).backlog;
+        var result = new Date(backlog[backlog.length-1].startdate);
+        result.setDate(result.getDate() + backlog[backlog.length-1].estimated_time);
+        if (dateBacklog < dateStart || dateBacklog > dateEnd ||dateBacklog < result.toISOString()) {
+            if (dateBacklog < dateStart || dateBacklog > dateEnd){
+                createNotification('error', 'Minimum date '+dateStart+' and maximum date '+dateEnd)
+            }
+            if (dateBacklog < result.toISOString()){
+                createNotification('error', 'Minimum date '+result.toISOString().split('T')[0]+' previous backlog didn"t finished yet')
 
+            }
+            return false
+        } else return true
     }
 
     render() {
@@ -138,20 +149,15 @@ class Backlog extends Component {
             return (
                 <tr key={book.id}>
                     <td>
-                        <Button color="primary" className="px-4"
-                                onClick={() => this.routeChange(book.id)}
-                        >
+                        <Button color="primary" className="px-4" onClick={() => this.routeChange(book)}>
                             {book.title}
                         </Button>
                     </td>
-
                     <td>{book.rank}</td>
-
                     <td>{book.estimated_time}</td>
                     <td>{book.sprint}</td>
                     <td>
-                        <Button color="success" className="mr-2"
-                                onClick={this.editProperty.bind(this, book.id, book.title, book.estimated_time, book.sprint, book.rank, book.project)}>Edit</Button>
+                        <Button color="success" className="mr-2" onClick={this.editProperty.bind(this, book.id, book.title, book.estimated_time, book.sprint, book.rank, book.project)}>Edit</Button>
                         <Button color="danger" onClick={this.deleteProperty.bind(this, book.id)}>Delete</Button>
 
                     </td>
@@ -161,6 +167,7 @@ class Backlog extends Component {
 
         return (
             <>
+                <NotificationContainer/>
                 <div className="content">
                     <Row>
                         <Col md="12">
@@ -193,9 +200,15 @@ class Backlog extends Component {
                                                         <Input id="startDate" type="date"
                                                                value={this.state.newBacklogData.startdate}
                                                                onChange={(e) => {
-                                                                   let {newBacklogData} = this.state;
-                                                                   newBacklogData.startdate = e.target.value;
-                                                                   this.setState({newBacklogData});
+                                                                   if (this.checkDate(e.target.value, JSON.parse(localStorage.getItem('projectdata')).start_date, JSON.parse(localStorage.getItem('projectdata')).due_date)) {
+                                                                       let {newBacklogData} = this.state;
+                                                                       newBacklogData.startdate = e.target.value;
+                                                                       this.setState({newBacklogData});
+                                                                   }
+                                                                   else {
+                                                                       e.target.value=''
+                                                                   }
+
 
                                                                }}/>
                                                         <label htmlFor="startDate">Estimated time</label>

@@ -158,10 +158,10 @@ class Project extends Component {
         )
     }
 
-    routeChange(id) {
-        localStorage.setItem('projectid',id);
-        let path = `Backlog/BacklogList/` + id;
-        localStorage.setItem('projectid', id);
+    routeChange(project) {
+        localStorage.setItem('projectid',project.id);
+        let path = `Backlog/BacklogList/` + project.id;
+        localStorage.setItem('projectdata', JSON.stringify(project));
         localStorage.removeItem('backlogid')
         this.props.history.push(path);
 
@@ -173,7 +173,7 @@ class Project extends Component {
                 <tr key={book.id}>
                     <td>
                         <Button color="primary" className="px-4"
-                                onClick={() => this.routeChange(book.id)}
+                                onClick={() => this.routeChange(book)}
                         >
                             {book.name}
                         </Button>

@@ -3,6 +3,8 @@ import {Button, Card, CardBody, Col, Input, Modal, ModalBody, ModalFooter, Modal
 import axios from 'axios';
 import {FormGroup} from "react-bootstrap";
 import Select from 'react-select';
+import {createNotification} from "./Common";
+import {NotificationContainer} from "react-notifications";
 
 
 let options = [];
@@ -67,7 +69,7 @@ class UserStory extends Component {
                 this.setState({
                     UserStoriesoptions: response.data
                 })
-            }).then(console.log(this.state))
+            })
         ;
 
         axios.get(`http://localhost:8000/secured/priority/priorityList`)
@@ -77,7 +79,7 @@ class UserStory extends Component {
                 })
             })
         ;
-        axios.get(`http://localhost:8000/secured/status/StatusList/`+ localStorage.getItem('projectid'))
+        axios.get(`http://localhost:8000/secured/status/StatusList/` + localStorage.getItem('projectid'))
             .then(response => {
                 this.setState({
                     statusList: response.data
@@ -96,7 +98,7 @@ class UserStory extends Component {
                 this.setState({
                     allusers: response.data
                 })
-            }).then(console.log(this.state))
+            })
         ;
     }
 
@@ -105,14 +107,12 @@ class UserStory extends Component {
             {selectedOption},
             () => console.log(`Option selected:`, this.state.selectedOption)
         );
-        console.log(this.state);
         this.state.newUserStoryData.asignedTo = selectedOption.value;
 
 
     };
     changeStatus = selectedOptionStatus => {
         this.setState({selectedOptionStatus}, () => console.log(`Option selected:`, this.state.selectedOptionStatus));
-        console.log(this.state);
         this.state.newUserStoryData.status = selectedOptionStatus.value;
     }
     changePriority = selectedOptionPriority => {
@@ -124,7 +124,6 @@ class UserStory extends Component {
     }
     changeActivity = selectedOptionActivity => {
         this.setState({selectedOptionActivity}, () => console.log(`Option selected:`, this.state.selectedOptionActivity));
-        console.log(this.state);
         this.state.newUserStoryData.activity = selectedOptionActivity.value;
     }
 
@@ -134,26 +133,22 @@ class UserStory extends Component {
             {selectedOption},
             () => console.log(`Option selected:`, this.state.selectedOption)
         );
-        console.log(this.state);
         this.state.editUserStoryData.asignedTo = selectedOption.value;
 
 
     };
     changeStatusUpdate = selectedOptionStatus => {
         this.setState({selectedOptionStatus}, () => console.log(`Option selected:`, this.state.selectedOptionStatus));
-        console.log(this.state);
         this.state.editUserStoryData.status = selectedOptionStatus.value;
     }
     changePriorityUpdate = selectedOptionPriority => {
         this.setState({selectedOptionPriority}, () => console.log(`Option selected:`, this.state.selectedOptionPriority));
-        console.log(this.state);
         this.state.editUserStoryData.priority = selectedOptionPriority.value;
 
 
     }
     changeActivityUpdate = selectedOptionActivity => {
         this.setState({selectedOptionActivity}, () => console.log(`Option selected:`, this.state.selectedOptionActivity));
-        console.log(this.state);
         this.state.editUserStoryData.activity = selectedOptionActivity.value;
     }
 
@@ -288,7 +283,6 @@ class UserStory extends Component {
 
                     }
                 });
-                console.log(userstories);
 
 
             }
@@ -323,9 +317,29 @@ class UserStory extends Component {
         )
     }
 
+    checkDate(dateUserStory) {
+        var backlog = JSON.parse(localStorage.getItem('backlogdata'));
+        var result = new Date(backlog.startdate);
+        result.setDate(result.getDate() + backlog.estimated_time);
+
+        if (this.state.newUserStoryData.estimatedTime.length > 0) {
+            var estimationtest = new Date(dateUserStory);
+            estimationtest.setDate(estimationtest.getDate() +  parseInt(this.state.newUserStoryData.estimatedTime));
+
+
+            if (estimationtest.toISOString() > result.toISOString()) {
+                createNotification('error', 'Wrong estimation,Minimum date ' + backlog.startdate + ' and maximum date ' + result.toISOString().split('T')[0])
+                return false
+            }
+        }
+        if (dateUserStory < backlog.startdate || dateUserStory > result.toISOString()) {
+            createNotification('error', 'Minimum date ' + backlog.startdate + ' and maximum date ' + result.toISOString().split('T')[0])
+            return false
+        } else return true
+    }
+
     render() {
         let userstories = this.state.UserStoriesoptions.map((book) => {
-            console.log(book.asigned_to);
             return (
                 <tr key={book.id}>
                     <td>{book.subject}</td>
@@ -351,6 +365,7 @@ class UserStory extends Component {
         });
         return (
             <>
+                <NotificationContainer/>
                 <div className="content">
                     <Row>
                         <Col md="12">
@@ -400,15 +415,20 @@ class UserStory extends Component {
                                                                    this.setState({newUserStoryData});
 
                                                                }}/>
-                                                        <label htmlFor="dueDate">due date</label>
+                                                        <label htmlFor="dueDate">start date</label>
 
                                                         <Input id="dueDate"
                                                                type="date"
                                                                value={this.state.newUserStoryData.dueDate}
                                                                onChange={(e) => {
-                                                                   let {newUserStoryData} = this.state;
-                                                                   newUserStoryData.dueDate = e.target.value;
-                                                                   this.setState({newUserStoryData});
+                                                                   if (this.checkDate(e.target.value)) {
+                                                                       let {newUserStoryData} = this.state;
+                                                                       newUserStoryData.dueDate = e.target.value;
+                                                                       this.setState({newUserStoryData});
+                                                                   } else {
+                                                                       e.target.value = ''
+                                                                   }
+
 
                                                                }}/>
                                                         <label htmlFor="dueDate">tags</label>
