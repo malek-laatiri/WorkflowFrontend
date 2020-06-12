@@ -361,7 +361,7 @@ export default class DevBoard extends React.Component {
                                                 <br/>
                                                 {home.files ?
                                                     home.files.map(files =>
-                                                        <a href={`http://localhost:8000/secured/files/download/${files.id}`}>download</a>
+                                                        <a href={`http://localhost:8000/secured/files/download/${files.id}`}>{files.image_name}</a>
 
 
                                                 )
