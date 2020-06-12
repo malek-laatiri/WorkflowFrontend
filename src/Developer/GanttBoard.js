@@ -39,10 +39,11 @@ export default class GanttBoard extends React.Component {
             let count = 0;
             let countComfirmed = 0;
             let countx = 0;
-
+let backloglinks=[];
             this.state.backlog.forEach((element) => {
                 let storiesArr = [];
                 countx++
+                backloglinks.push(countx)
                 let JSONitem = {
                     id: countx,
                     text: element.title,
@@ -79,6 +80,11 @@ export default class GanttBoard extends React.Component {
                     linksarr.push(link);
                 }
 
+            })
+            console.log(backloglinks)
+            backloglinks.forEach((bachlogLink,index)=>{
+                let link = {id: linksarr.length+1, source: bachlogLink, target: backloglinks[index+1], type: '1'}
+                linksarr.push(link);
             })
             JSONdata.links = linksarr;
         }
