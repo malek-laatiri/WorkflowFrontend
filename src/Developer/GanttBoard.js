@@ -70,7 +70,9 @@ export default class GanttBoard extends React.Component {
 
             });
 
-            JSONdata.data = arr;
+            JSONdata.data = arr.sort(function(a, b) {
+                return a.id - b.id  ||  a.name.localeCompare(b.name);
+            });
             JSONdata.data.forEach(function (element, index) {
                 if (index !== JSONdata.data.length - 1) {
                     let link = {id: element.id, source: element.id, target: JSONdata.data[index + 1].id, type: '0'}
