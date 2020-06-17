@@ -124,20 +124,22 @@ class Backlog extends Component {
     routeChange(backlog) {
         let path = `/admin/UserStory/userStoryList/` + backlog.id;
         this.props.history.push(path);
-        localStorage.setItem('backlogid',backlog.id);
-        localStorage.setItem('backlogdata', JSON.stringify(backlog));
+        localStorage.setItem('backlogid', backlog.id);
+        localStorage.setItem('backlogStartDate', backlog.startdate);
+        localStorage.setItem('backlogEstimation', backlog.estimated_time);
+
     }
 
     checkDate(dateBacklog, dateStart, dateEnd) {
-        var backlog=JSON.parse(localStorage.getItem('projectdata')).backlog;
-        var result = new Date(backlog[backlog.length-1].startdate);
-        result.setDate(result.getDate() + backlog[backlog.length-1].estimated_time);
-        if (dateBacklog < dateStart || dateBacklog > dateEnd ||dateBacklog < result.toISOString()) {
-            if (dateBacklog < dateStart || dateBacklog > dateEnd){
-                createNotification('error', 'Minimum date '+dateStart+' and maximum date '+dateEnd)
+        var backlog = this.state.backlogs;
+        var result = new Date(backlog[backlog.length - 1].startdate);
+        result.setDate(result.getDate() + parseInt(backlog[backlog.length - 1].estimated_time));
+        if (dateBacklog < dateStart || dateBacklog > dateEnd || dateBacklog < result.toISOString()) {
+            if (dateBacklog < dateStart || dateBacklog > dateEnd) {
+                createNotification('error', 'Minimum date ' + dateStart + ' and maximum date ' + dateEnd)
             }
-            if (dateBacklog < result.toISOString()){
-                createNotification('error', 'Minimum date '+result.toISOString().split('T')[0]+' previous backlog didn"t finished yet')
+            if (dateBacklog < result.toISOString()) {
+                createNotification('error', 'Maximum date ' + result.toISOString().split('T')[0] + ' previous backlog didn"t finished yet')
 
             }
             return false
@@ -157,7 +159,8 @@ class Backlog extends Component {
                     <td>{book.estimated_time}</td>
                     <td>{book.sprint}</td>
                     <td>
-                        <Button color="success" className="mr-2" onClick={this.editProperty.bind(this, book.id, book.title, book.estimated_time, book.sprint, book.rank, book.project)}>Edit</Button>
+                        <Button color="success" className="mr-2"
+                                onClick={this.editProperty.bind(this, book.id, book.title, book.estimated_time, book.sprint, book.rank, book.project)}>Edit</Button>
                         <Button color="danger" onClick={this.deleteProperty.bind(this, book.id)}>Delete</Button>
 
                     </td>
@@ -204,16 +207,15 @@ class Backlog extends Component {
                                                                        let {newBacklogData} = this.state;
                                                                        newBacklogData.startdate = e.target.value;
                                                                        this.setState({newBacklogData});
-                                                                   }
-                                                                   else {
-                                                                       e.target.value=''
+                                                                   } else {
+                                                                       e.target.value = ''
                                                                    }
 
 
                                                                }}/>
                                                         <label htmlFor="startDate">Estimated time</label>
 
-                                                        <Input id="startDate" type="number"
+                                                        <Input id="startDate" type="number" min="7" max="30"
                                                                value={this.state.newBacklogData.estimatedTime}
                                                                onChange={(e) => {
                                                                    let {newBacklogData} = this.state;

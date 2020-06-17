@@ -318,22 +318,21 @@ class UserStory extends Component {
     }
 
     checkDate(dateUserStory) {
-        var backlog = JSON.parse(localStorage.getItem('backlogdata'));
-        var result = new Date(backlog.startdate);
-        result.setDate(result.getDate() + backlog.estimated_time);
-
+        var backlog = localStorage.getItem('backlogStartDate');
+        var result = new Date(backlog);
+        result.setDate(result.getDate() + parseInt(localStorage.getItem('backlogEstimation')));
         if (this.state.newUserStoryData.estimatedTime.length > 0) {
             var estimationtest = new Date(dateUserStory);
-            estimationtest.setDate(estimationtest.getDate() +  parseInt(this.state.newUserStoryData.estimatedTime));
+            estimationtest.setDate(estimationtest.getDate() + parseInt(this.state.newUserStoryData.estimatedTime));
 
 
             if (estimationtest.toISOString() > result.toISOString()) {
-                createNotification('error', 'Wrong estimation,Minimum date ' + backlog.startdate + ' and maximum date ' + result.toISOString().split('T')[0])
+                createNotification('error', 'Wrong estimation,Minimum date ' + backlog + ' and maximum date ' + result.toISOString().split('T')[0])
                 return false
             }
         }
-        if (dateUserStory < backlog.startdate || dateUserStory > result.toISOString()) {
-            createNotification('error', 'Minimum date ' + backlog.startdate + ' and maximum date ' + result.toISOString().split('T')[0])
+        if (dateUserStory < backlog || dateUserStory > result.toISOString()) {
+            createNotification('error', 'Minimum date ' + backlog + ' and maximum date ' + result.toISOString().split('T')[0])
             return false
         } else return true
     }
@@ -408,11 +407,18 @@ class UserStory extends Component {
                                                         <label htmlFor="dueDate">estimated time</label>
 
                                                         <Input id="dueDate"
+                                                               min="1"
+                                                               max={parseInt(localStorage.getItem("backlogEstimation"))}
                                                                value={this.state.newUserStoryData.estimatedTime}
                                                                onChange={(e) => {
-                                                                   let {newUserStoryData} = this.state;
-                                                                   newUserStoryData.estimatedTime = e.target.value;
-                                                                   this.setState({newUserStoryData});
+                                                                   if (e.target.value > parseInt(localStorage.getItem("backlogEstimation"))) {
+                                                                       createNotification('error', 'Maximum estimation ' + localStorage.getItem("backlogEstimation"))
+                                                                   } else {
+                                                                       let {newUserStoryData} = this.state;
+                                                                       newUserStoryData.estimatedTime = e.target.value;
+                                                                       this.setState({newUserStoryData});
+                                                                   }
+
 
                                                                }}/>
                                                         <label htmlFor="dueDate">start date</label>
@@ -435,6 +441,11 @@ class UserStory extends Component {
 
                                                         <Input id="dueDate"
                                                                value={this.state.newUserStoryData.tags}
+                                                               onKeyPress={(event) => {
+                                                                   if (event.keyCode === 32) {
+                                                                       console.log('enter press here! ')
+                                                                   }
+                                                               }}
                                                                onChange={(e) => {
                                                                    let {newUserStoryData} = this.state;
                                                                    newUserStoryData.tags = e.target.value;
@@ -617,7 +628,8 @@ class UserStory extends Component {
                     </Row>
                 </div>
             </>
-        );
+        )
+            ;
     }
 }
 

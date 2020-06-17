@@ -110,6 +110,7 @@ export default class DevBoard extends React.Component {
                         title: element.subject,
                         description: element.content,
                         label: element.estimated_time,
+                        // style: { backgroundColor: 'yellow' },
                         draggable: draggablex,
                         editable: true,
                     })
@@ -165,6 +166,9 @@ export default class DevBoard extends React.Component {
         console.log(this.state.userStroyShow);
         axios.patch('http://localhost:8000/secured/UserStory/UerStoryLabel/' + this.state.userStroyShow.id, {"label": selectedOption.value}).then(response => {
             this.createNotification('info', "you Have Asigned a Label To UserStory")
+        })
+        this.setState({
+            newProjectModal: !this.state.newProjectModal
         })
     };
     onFileChange = event => {

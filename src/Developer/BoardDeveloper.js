@@ -68,48 +68,132 @@ export default class BoardDeveloper extends React.Component {
             }
 
         ];
-        const handleChange = (state) => {
-            localStorage.setItem('projectid', state.selectedRows[0].id);
+        const columns2 = [
+            {
+                name: 'title',
+                selector: 'title',
+                sortable: true,
+            },
+            {
+                name: 'Start date',
+                selector: 'startdate',
+                sortable: true,
+            }, {
+                name: 'sprint',
+                selector: 'sprint',
+                sortable: true,
+            }, {
+                name: 'rank',
+                selector: 'rank',
+                sortable: true,
+            }
 
+
+        ];
+        const columns3 = [
+            {
+                name: 'subject',
+                selector: 'subject',
+                sortable: true,
+            },
+            {
+                name: 'content',
+                selector: 'content',
+                sortable: true,
+            }, {
+                name: 'asigned_to',
+                selector: 'asigned_to.username',
+                sortable: true,
+            }
+
+
+        ];
+        const handleChange = (state) => {
+            if (state.selectedRows[0])
+            {
+                localStorage.setItem('projectid', state.selectedRows[0].id);
+
+            }
+            localStorage.removeItem('projectdata')
+            localStorage.removeItem('backlogdata')
             console.log('Selected Rows: ', state.selectedRows);
         };
-        console.log(this.state.projects);
-        return <div>
-            <Grid container style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <Grid item style={style.paper} md="6">
-                    <Card>
-                        <CardHeader title="Current Projects">
-                        </CardHeader>
-                        <CardContent>
-                            <DataTable
-                                columns={columns}
-                                data={this.state.currentprojects}
-                                selectableRows
-                                onSelectedRowsChange={handleChange}
-                                selectableRowsHighlight
-                                paginationRowsPerPageOptions
-                                //theme="solarized"
-                            />
-                        </CardContent>
-                    </Card>
+        const expandFunct = () => {
+        }
+        const ExpanableComponent3 = (props) =>
+            <DataTable
+                columns={columns3}
+                data={props.data.user_stories}
+                pagination={true}
+                fixedHeader={true}
+                keyField="name"
+                striped={true}
+                highlightOnHover={true}
+                persistTableHead={true}
+                defaultSortField="name"
+                defaultSortAsc={false}
+            />;
+        const ExpanableComponent = (props) =>
+            <DataTable
+                columns={columns2}
+                data={props.data.backlog}
+                pagination={true}
+                fixedHeader={true}
+                keyField="name"
+                striped={true}
+                highlightOnHover={true}
+                persistTableHead={true}
+                defaultSortField="name"
+                defaultSortAsc={false}
+                overflowY={true}
+                expandableRows
+                expandableRowsComponent={<ExpanableComponent3/>}
+
+            />;
+
+
+            return <div>
+                <Grid container style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    <Grid item style={style.paper} md="6">
+                        <Card>
+                            <CardHeader title="Current Projects">
+                            </CardHeader>
+                            <CardContent>
+                                <DataTable
+                                    columns={columns}
+                                    data={this.state.currentprojects}
+                                    selectableRows
+                                    onSelectedRowsChange={handleChange}
+                                    selectableRowsHighlight
+                                    paginationRowsPerPageOptions
+                                    expandableRows
+                                    onRowExpandToggled={expandFunct}
+                                    expandableRowsComponent={<ExpanableComponent/>}
+                                    striped={true}
+                                    highlightOnHover={true}
+                                    persistTableHead={true}
+                                    //theme="solarized"
+                                />
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    <Grid item style={style.paper} md="6">
+                        <Card>
+                            <CardHeader title="All Projects">
+                            </CardHeader>
+                            <CardContent>
+                                <DataTable
+                                    columns={columns}
+                                    data={this.state.projects}
+                                    //theme="solarized"
+                                />
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
                 </Grid>
 
-                <Grid item style={style.paper} md="6">
-                    <Card>
-                        <CardHeader title="All Projects">
-                        </CardHeader>
-                        <CardContent>
-                            <DataTable
-                                columns={columns}
-                                data={this.state.projects}
-                                //theme="solarized"
-                            />
-                        </CardContent>
-                    </Card>
-                </Grid>
-
-            </Grid>
-
-        </div>
+            </div>
+        }
     }
-}

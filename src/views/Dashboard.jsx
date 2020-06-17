@@ -384,12 +384,7 @@ class Dashboard extends React.Component {
                                     </div>
                                 </CardBody>
                                 <CardFooter>
-                                    <div className="legend">
-                                        <i className="fa fa-circle text-primary"/> Opened{" "}
-                                        <i className="fa fa-circle text-warning"/> Read{" "}
-                                        <i className="fa fa-circle text-danger"/> Deleted{" "}
-                                        <i className="fa fa-circle text-gray"/> Unopened
-                                    </div>
+
                                     <hr/>
                                     <div className="stats">
                                         <i className="fa fa-calendar"/> Number of projects {this.state.projectsLength}
@@ -411,7 +406,7 @@ class Dashboard extends React.Component {
                         <Col md="12">
                             <Card className="card-chart">
                                 <CardHeader>
-                                    <CardTitle tag="h5">NASDAQ: AAPL</CardTitle>
+                                    <CardTitle tag="h5">CURRENT PROJECTS</CardTitle>
                                     <p className="card-category">Line Chart with Points</p>
                                 </CardHeader>
                                 <CardBody>

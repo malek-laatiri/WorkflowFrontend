@@ -51,6 +51,7 @@ let backloglinks=[];
                     duration: element.estimated_time,
                     progress: '',
                     open: true
+                    //,color:"#2f4b7c"
                 };
                 element.user_stories.map((x) => {
                     countx++

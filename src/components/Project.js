@@ -3,7 +3,8 @@ import {Button, Card, CardBody, Col, Input, Modal, ModalBody, ModalFooter, Modal
 import axios from 'axios';
 import {FormGroup} from "react-bootstrap";
 import Select from 'react-select';
-import {getUser} from "./Common";
+import {createNotification, getUser} from "./Common";
+import {NotificationContainer} from "react-notifications";
 
 
 let options = [];
@@ -73,7 +74,6 @@ class Project extends Component {
                 ]
             );
         }
-        console.log(options);
         // this.state.newBookModal=true;
 
     }
@@ -191,6 +191,7 @@ class Project extends Component {
         });
         return (
             <>
+                <NotificationContainer/>
                 <div className="content">
                     <Row>
                         <Col md="12">
@@ -218,25 +219,37 @@ class Project extends Component {
                                                                    this.setState({newProjectData});
 
                                                                }}/>
-                                                        <label htmlFor="startDate">start date</label>
+                                                        <label htmlFor="startDate">Start Date</label>
 
                                                         <Input id="startDate" type="date"
                                                                value={this.state.newProjectData.startDate}
                                                                onChange={(e) => {
-                                                                   let {newProjectData} = this.state;
-                                                                   newProjectData.startDate = e.target.value;
-                                                                   this.setState({newProjectData});
+                                                                   console.log(e.target.value)
+                                                                   console.log(new Date().toISOString())
+                                                                   if (e.target.value<new Date().toISOString()){
+                                                                       createNotification('error', 'Wrong Date')
+
+                                                                   }else {
+                                                                       let {newProjectData} = this.state;
+                                                                       newProjectData.startDate = e.target.value;
+                                                                       this.setState({newProjectData});
+                                                                   }
+
 
                                                                }}/>
-                                                        <label htmlFor="dueDate">due date</label>
+                                                        <label htmlFor="dueDate">Due Date</label>
 
                                                         <Input id="dueDate" type="date"
                                                                value={this.state.newProjectData.dueDate}
                                                                onChange={(e) => {
-                                                                   let {newProjectData} = this.state;
-                                                                   newProjectData.dueDate = e.target.value;
-                                                                   this.setState({newProjectData});
+                                                                  if (e.target.value<new Date().toISOString() && e.target.value<this.state.newProjectData.startDate){
+                                                                      createNotification('error', 'Wrong Date')
+                                                                  }else {
+                                                                      let {newProjectData} = this.state;
+                                                                      newProjectData.dueDate = e.target.value;
+                                                                      this.setState({newProjectData});
 
+                                                                  }
                                                                }}/>
                                                         <label htmlFor="Team">Project Members</label>
 
