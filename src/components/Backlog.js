@@ -191,7 +191,7 @@ class Backlog extends Component {
                                                 <ModalBody>
                                                     <FormGroup className="mb-3">
                                                         <label htmlFor="name">title</label>
-                                                        <Input id="name" placeholder="with a placeholder"
+                                                        <Input id="name" placeholder="Title"
                                                                value={this.state.newBacklogData.title}
                                                                onChange={(e) => {
                                                                    let {newBacklogData} = this.state;
@@ -228,9 +228,21 @@ class Backlog extends Component {
                                                         <Input id="dueDate" type="number"
                                                                value={this.state.newBacklogData.sprint}
                                                                onChange={(e) => {
-                                                                   let {newBacklogData} = this.state;
-                                                                   newBacklogData.sprint = e.target.value;
-                                                                   this.setState({newBacklogData});
+                                                                   var arr = [];
+                                                                   var contole = localStorage.getItem("projectdata")
+                                                                   JSON.parse(contole).backlog.map((element) => {
+                                                                       arr.push(element.sprint)
+                                                                   })
+                                                                   console.log(arr)
+                                                                   if (arr.includes(parseInt(e.target.value)) || parseInt(e.target.value) > JSON.parse(contole).sprint_num) {
+                                                                       createNotification('error', 'wrong sprint,the sprints '+arr+' already taken and maximum sprint '+JSON.parse(contole).sprint_num)
+
+                                                                   } else {
+                                                                       let {newBacklogData} = this.state;
+                                                                       newBacklogData.sprint = e.target.value;
+                                                                       this.setState({newBacklogData});
+                                                                   }
+
 
                                                                }}/>
                                                         <label htmlFor="Team">rank</label>
