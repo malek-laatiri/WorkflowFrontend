@@ -41,10 +41,10 @@ export default class DevBoard extends React.Component {
     };
 
     async componentWillMount() {
-        let res = await fetch('http://localhost:8000/secured/status/StatusList/' + localStorage.getItem('projectid'));
+        let res = await fetch('http://localhost:8000/secured/status/StatusListPrime/' + localStorage.getItem('projectid'));
         res = await res.json();
         this.setState({
-            status: res
+            status: res.data
         })
         let res1 = await fetch(`http://localhost:8000/secured/label/labelsList/` + localStorage.getItem('projectid'));
         res1 = await res1.json();
@@ -85,6 +85,7 @@ export default class DevBoard extends React.Component {
     }
 
     functiontry() {
+        console.log(this.state)
         var draggablex = 1;
         const {status} = this.state;
         let JSONData = {
@@ -101,7 +102,7 @@ export default class DevBoard extends React.Component {
                             draggablex = 0;
 
                         }
-                    } else if (JSON.stringify(getUser()) != JSON.stringify(element.asigned_to)) {
+                    } else if (JSON.stringify(getUser().username) != JSON.stringify(element.asigned_to.username)) {
                         draggablex = 0;
                     }
                     stories.push({
@@ -361,7 +362,15 @@ export default class DevBoard extends React.Component {
                                 <Grid.Column spacing={3}>
                                     {this.state.userStroyShow.comments ?
                                         this.state.userStroyShow.comments.map(home =>
-                                            <div>{home.written_by.username} {moment(home.written_at).fromNow()}<br/> {home.content}
+                                            <div>
+                                                {home.written_by.email===getUser().email?
+                                                    <i style={{color: "red"}} className="fas fa-trash-alt" onClick={()=> {
+                                                        axios.delete('http://localhost:8000/secured/comments/delete/' + home.id)
+                                                        this.setState({
+                                                            newProjectModal: !this.state.newProjectModal
+                                                        })
+                                                    }}></i>:<div></div>}
+                                               {home.written_by.username} {moment(home.written_at).fromNow()}<br/> {home.content}
                                                 <br/>
                                                 {home.files ?
                                                     home.files.map(files =>
@@ -373,7 +382,7 @@ export default class DevBoard extends React.Component {
                                                 <div></div>
                                                 }
 
-                                            </div>)
+                                                 </div>)
                                         : <div>There's no comments</div>}
                                 </Grid.Column>
                             </Grid.Row>

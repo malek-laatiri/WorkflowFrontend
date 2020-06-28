@@ -163,7 +163,10 @@ class Project extends Component {
     routeChange(project) {
         localStorage.setItem('projectid',project.id);
         let path = `Backlog/BacklogList/` + project.id;
+        localStorage.setItem('projectStartDate', project.start_date);
+        localStorage.setItem('projectdataDueDate', project.due_date);
         localStorage.setItem('projectdata', JSON.stringify(project));
+
         localStorage.removeItem('backlogid')
         this.props.history.push(path);
 

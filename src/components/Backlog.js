@@ -64,6 +64,8 @@ class Backlog extends Component {
 
     addPriority() {
         this.state.newBacklogData.project = localStorage.getItem('projectid');
+        console.log("ba3d bind")
+        console.log(this.state)
         let {newBacklogData} = this.state;
         //newProjectData.Team = this.state.selectedOption;
         this.setState({newBacklogData});
@@ -131,19 +133,33 @@ class Backlog extends Component {
     }
 
     checkDate(dateBacklog, dateStart, dateEnd) {
-        var backlog = this.state.backlogs;
-        var result = new Date(backlog[backlog.length - 1].startdate);
-        result.setDate(result.getDate() + parseInt(backlog[backlog.length - 1].estimated_time));
-        if (dateBacklog < dateStart || dateBacklog > dateEnd || dateBacklog < result.toISOString()) {
-            if (dateBacklog < dateStart || dateBacklog > dateEnd) {
-                createNotification('error', 'Minimum date ' + dateStart + ' and maximum date ' + dateEnd)
-            }
-            if (dateBacklog < result.toISOString()) {
-                createNotification('error', 'Maximum date ' + result.toISOString().split('T')[0] + ' previous backlog didn"t finished yet')
+        if (this.state.backlogs.length>0){
+            var backlog = this.state.backlogs;
+            console.log(backlog)
+            var result = new Date(backlog[backlog.length - 1].startdate);
+            result.setDate(result.getDate() + parseInt(backlog[backlog.length - 1].estimated_time));
+            if (dateBacklog < dateStart || dateBacklog > dateEnd || dateBacklog < result.toISOString()) {
+                if (dateBacklog < dateStart || dateBacklog > dateEnd) {
+                    createNotification('error', 'Minimum date ' + dateStart + ' and maximum date ' + dateEnd)
+                }
+                if (dateBacklog < result.toISOString()) {
+                    createNotification('error', 'Maximum date ' + result.toISOString().split('T')[0] + ' previous backlog didn"t finished yet')
 
+                }
+                return false
+            } else return true
+        } else {
+            if (dateBacklog < dateStart || dateBacklog > dateEnd ) {
+                if (dateBacklog < dateStart || dateBacklog > dateEnd) {
+                    createNotification('error', 'Minimum date ' + dateStart + ' and maximum date ' + dateEnd)
+                }
+
+                return false
             }
-            return false
-        } else return true
+            else return true
+
+        }
+
     }
 
     render() {
@@ -218,9 +234,15 @@ class Backlog extends Component {
                                                         <Input id="startDate" type="number" min="7" max="30"
                                                                value={this.state.newBacklogData.estimatedTime}
                                                                onChange={(e) => {
-                                                                   let {newBacklogData} = this.state;
-                                                                   newBacklogData.estimatedTime = e.target.value;
-                                                                   this.setState({newBacklogData});
+                                                                   if (e.target.value<0 || e.target.value>30){
+                                                                       createNotification('error', 'wrong sprint estimation,Maximum 30 and Minimum 7.')
+
+                                                                   }
+                                                                   else {
+                                                                       let {newBacklogData} = this.state;
+                                                                       newBacklogData.estimatedTime = e.target.value;
+                                                                       this.setState({newBacklogData});
+                                                                   }
 
                                                                }}/>
                                                         <label htmlFor="dueDate">sprint</label>
@@ -230,10 +252,10 @@ class Backlog extends Component {
                                                                onChange={(e) => {
                                                                    var arr = [];
                                                                    var contole = localStorage.getItem("projectdata")
-                                                                   JSON.parse(contole).backlog.map((element) => {
+                                                                   this.state.backlogs.map((element) => {
                                                                        arr.push(element.sprint)
                                                                    })
-                                                                   console.log(arr)
+
                                                                    if (arr.includes(parseInt(e.target.value)) || parseInt(e.target.value) > JSON.parse(contole).sprint_num) {
                                                                        createNotification('error', 'wrong sprint,the sprints '+arr+' already taken and maximum sprint '+JSON.parse(contole).sprint_num)
 

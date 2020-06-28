@@ -25,10 +25,10 @@ class StatusDemo extends Component {
 
     componentWillMount() {
 
-        axios.get(`http://localhost:8000/secured/status/StatusList/`+localStorage.getItem('projectid'))
+        axios.get(`http://localhost:8000/secured/status/StatusListSecond/`+localStorage.getItem('projectid'))
             .then(response => {
                 this.setState({
-                    status: response.data
+                    status: response.data.data
                 })
             }).then(console.log(this.state))
         ;

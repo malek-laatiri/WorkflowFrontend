@@ -39,7 +39,7 @@ export default class GanttBoard extends React.Component {
             let count = 0;
             let countComfirmed = 0;
             let countx = 0;
-let backloglinks=[];
+            let backloglinks = [];
             this.state.backlog.forEach((element) => {
                 let storiesArr = [];
                 countx++
@@ -63,17 +63,18 @@ let backloglinks=[];
                         id: countx, text: x.subject, start_date: x.due_date,
                         duration: x.estimated_time, progress: x.progress, parent: JSONitem.id
                     }
-                    JSONitem.progress=(countComfirmed * 100 / count) / 100;
+                    JSONitem.progress = (countComfirmed * 100 / count) / 100;
 
                     arr.push(JSONElem)
                 })
                 arr.push(JSONitem)
+                console.log("hedha JSON DATA")
                 console.log(JSONdata)
 
             });
 
-            JSONdata.data = arr.sort(function(a, b) {
-                return a.id - b.id  ||  a.name.localeCompare(b.name);
+            JSONdata.data = arr.sort(function (a, b) {
+                return a.id - b.id || a.name.localeCompare(b.name);
             });
             JSONdata.data.forEach(function (element, index) {
                 if (index !== JSONdata.data.length - 1) {
@@ -83,8 +84,8 @@ let backloglinks=[];
 
             })
             console.log(backloglinks)
-            backloglinks.forEach((bachlogLink,index)=>{
-                let link = {id: linksarr.length+1, source: bachlogLink, target: backloglinks[index+1], type: '1'}
+            backloglinks.forEach((bachlogLink, index) => {
+                let link = {id: linksarr.length + 1, source: bachlogLink, target: backloglinks[index + 1], type: '1'}
                 linksarr.push(link);
             })
             JSONdata.links = linksarr;
