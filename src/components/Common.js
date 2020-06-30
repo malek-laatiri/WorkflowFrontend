@@ -44,3 +44,19 @@ export const createNotification = (type, msg) => {
     }
     ;
 };
+
+export const checkEmptyObject=(obj)=>{
+    var errorText='this fields connot be empty : '
+    var result=true
+    for(var key in obj) {
+        if(obj[key] === "") {
+            errorText+=key + " is blank,";
+            result=false
+        }
+
+    }
+    if (result==false){
+        createNotification('error', errorText)
+    }
+    return result
+}

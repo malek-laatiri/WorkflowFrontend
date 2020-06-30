@@ -3,7 +3,7 @@ import {Button, Card, CardBody, Col, Input, Modal, ModalBody, ModalFooter, Modal
 import axios from 'axios';
 import {FormGroup} from "react-bootstrap";
 import Select from 'react-select';
-import {createNotification, getUser} from "./Common";
+import {checkEmptyObject, createNotification, getUser} from "./Common";
 import {NotificationContainer} from "react-notifications";
 
 
@@ -96,30 +96,40 @@ class Project extends Component {
 
 
     addPriority() {
-        this.state.selectedOption.forEach(element => this.state.newProjectData.Team.push(element.value));
 
         this.state.newProjectData.createdBy = getUser().id;
         let {newProjectData} = this.state;
         this.setState({newProjectData});
-        axios.post('http://localhost:8000/secured/project/projectCreate', this.state.newProjectData).then(
-            (response) => {
-                let {projects} = this.state;
-                projects.push(response.data);
+        if (checkEmptyObject(this.state.newProjectData)){
+            this.state.selectedOption.forEach(element => this.state.newProjectData.Team.push(element.value));
+            axios.post('http://localhost:8000/secured/project/projectCreate', this.state.newProjectData).then(
+                (response) => {
+                    let {projects} = this.state;
+                    projects.push(response.data);
 
-                this.setState({
-                    projects, newProjectModal: false, newProjectData: {
-                        name: '',
-                        startDate: '',
-                        dueDate: '',
-                        sprintNum:'',
-                        createdBy: '',
-                        Team: []
+                    this.setState({
+                        projects, newProjectModal: false, newProjectData: {
+                            name: '',
+                            startDate: '',
+                            dueDate: '',
+                            sprintNum:'',
+                            createdBy: '',
+                            Team: []
 
-                    }
-                });
+                        }
+                    });
 
-            }
-        );
+                }
+            );
+            axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+                .then(response => {
+                    this.setState({
+                        projects: response.data
+                    })
+                })
+            ;
+        }
+
 
     }
 
@@ -140,7 +150,13 @@ class Project extends Component {
                         Team: []
                     }
                 });
-                window.location.reload();
+                axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+                    .then(response => {
+                        this.setState({
+                            projects: response.data
+                        })
+                    })
+                ;
 
             }
         );
@@ -153,11 +169,26 @@ class Project extends Component {
     }
 
     deleteProperty(id) {
-        axios.delete('http://localhost:8000/secured/project/projectDelete/' + id).then((response) => {
-                window.location.reload();
 
-            }
-        )
+        var r = window.confirm("are you sure!");
+        if (r == true) {
+            axios.delete('http://localhost:8000/secured/project/projectDelete/' + id).then((response) => {
+                createNotification('info', 'Project deleted')
+                axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+                    .then(response => {
+                        this.setState({
+                            projects: response.data
+                        })
+                    })
+                ;
+
+                }
+            )
+
+        } else {
+            createNotification('error', 'cancellation')
+
+        }
     }
 
     routeChange(project) {
@@ -173,6 +204,7 @@ class Project extends Component {
     }
 
     render() {
+
         let projects = this.state.projects.map((book) => {
             return (
                 <tr key={book.id}>
@@ -254,8 +286,9 @@ class Project extends Component {
                                                         <Input id="dueDate" type="date"
                                                                value={this.state.newProjectData.dueDate}
                                                                onChange={(e) => {
-                                                                  if (e.target.value<new Date().toISOString() && e.target.value<this.state.newProjectData.startDate){
+                                                                  if (e.target.value<new Date().toISOString() || e.target.value<this.state.newProjectData.startDate){
                                                                       createNotification('error', 'Wrong Date')
+                                                                      e.target.value=''
                                                                   }else {
                                                                       let {newProjectData} = this.state;
                                                                       newProjectData.dueDate = e.target.value;

@@ -183,22 +183,23 @@ export default class DevBoard extends React.Component {
             content: this.state.newCommentData.content,
             writtenBy: getUser().id
         }).then(response => {
-            console.log(response)
-            const formData = new FormData();
-            formData.append("upload[imageFile]", this.state.selectedFile);
-            formData.append("imageName", this.state.selectedFile.name);
-            formData.append("imageSize", this.state.selectedFile.size);
-            formData.append("imageType", this.state.selectedFile.type);
-            formData.append("comment", response.data.data);
+            if (this.state.selectedFile){
+                const formData = new FormData();
+                formData.append("upload[imageFile]", this.state.selectedFile);
+                formData.append("imageName", this.state.selectedFile.name);
+                formData.append("imageSize", this.state.selectedFile.size);
+                formData.append("imageType", this.state.selectedFile.type);
+                formData.append("comment", response.data.data);
 
 
-            axios.post("http://localhost:8000/secured/files/uploadFile", formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                }
-            );
-            this.createNotification('info', "you Have Comment Has Been Added.")
+                axios.post("http://localhost:8000/secured/files/uploadFile", formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    }
+                );
+                this.createNotification('info', "you Have Comment Has Been Added.")
+            }
         })
         this.setState({
             newProjectModal: !this.state.newProjectModal
@@ -255,7 +256,7 @@ export default class DevBoard extends React.Component {
                             }
                             <Grid.Row columns={2}>
                                 <Grid.Column textAlign="center">
-                                    Subject:
+                                    <strong>Subject:</strong>
                                 </Grid.Column>
                                 <Grid.Column>
                                     {this.state.userStroyShow.subject}
@@ -264,7 +265,7 @@ export default class DevBoard extends React.Component {
 
                             <Grid.Row columns={2}>
                                 <Grid.Column textAlign="center">
-                                    Content:
+                                    <strong>Content:</strong>
                                 </Grid.Column>
                                 <Grid.Column spacing={3}>
                                     {this.state.userStroyShow.content}
@@ -273,7 +274,7 @@ export default class DevBoard extends React.Component {
 
                             <Grid.Row columns={2}>
                                 <Grid.Column textAlign="center">
-                                    Priority:
+                                    <strong>Priority:</strong>
                                 </Grid.Column>
                                 <Grid.Column>
                                     {this.state.userStroyShow.priority ? this.state.userStroyShow.priority.name :
@@ -283,7 +284,7 @@ export default class DevBoard extends React.Component {
 
                             <Grid.Row columns={2}>
                                 <Grid.Column textAlign="center">
-                                    Estimated Time:
+                                    <strong>Estimated Time:</strong>
                                 </Grid.Column>
                                 <Grid.Column>
                                     {this.state.userStroyShow.estimated_time}
@@ -292,7 +293,7 @@ export default class DevBoard extends React.Component {
 
                             <Grid.Row columns={2}>
                                 <Grid.Column textAlign="center">
-                                    Activity:
+                                    <strong> Activity:</strong>
                                 </Grid.Column>
                                 <Grid.Column>
                                     {this.state.userStroyShow.activity ? this.state.userStroyShow.activity.name :
@@ -302,13 +303,12 @@ export default class DevBoard extends React.Component {
 
                             <Grid.Row columns={2}>
                                 <Grid.Column textAlign="center">
-                                    History:
+                                    <strong>History:</strong>
                                 </Grid.Column>
                                 <Grid.Column>
                                     {this.state.userStroyShow.histories ?
                                         this.state.userStroyShow.histories.map(home =>
-                                            <div>{moment(home.modified_at, "YYYYMMDD").fromNow()
-                                            } {home.status.name}</div>
+                                            <div><small><a href="#" style={{color: "#5e6c84"}}>{moment(home.modified_at).fromNow()}</a></small> <strong>{home.status.name}</strong></div>
                                         )
                                         : <div>loading</div>}
                                 </Grid.Column>
@@ -318,7 +318,7 @@ export default class DevBoard extends React.Component {
                                 {JSON.stringify(getUser()) != JSON.stringify(this.state.userStroyShow.asigned_to) || getUser().roles.includes("ROLE_CLIENT") && getUser().privilege == 0 ?
                                     <>
                                         <Grid.Column textAlign="center">
-                                            Current Progress
+                                            <strong>Current Progress</strong>
                                         </Grid.Column>
                                         <Grid.Column>
                                             <Typography id="discrete-slider-always" gutterBottom>
@@ -357,7 +357,7 @@ export default class DevBoard extends React.Component {
 
                             <Grid.Row columns={2}>
                                 <Grid.Column textAlign="center">
-                                    Comments:
+                                    <strong>Comments:</strong>
                                 </Grid.Column>
                                 <Grid.Column spacing={3}>
                                     {this.state.userStroyShow.comments ?
@@ -370,7 +370,7 @@ export default class DevBoard extends React.Component {
                                                             newProjectModal: !this.state.newProjectModal
                                                         })
                                                     }}></i>:<div></div>}
-                                               {home.written_by.username} {moment(home.written_at).fromNow()}<br/> {home.content}
+                                                <strong>{home.written_by.username}</strong> {home.content}<br/> <small><a href="#" style={{color: "#5e6c84"}}>{moment(home.written_at).fromNow()}</a></small>
                                                 <br/>
                                                 {home.files ?
                                                     home.files.map(files =>
@@ -389,7 +389,7 @@ export default class DevBoard extends React.Component {
 
                             <Grid.Row columns={2}>
                                 <Grid.Column textAlign="center">
-                                    add Comment
+                                    <strong>add Comment</strong>
                                 </Grid.Column>
                                 <Grid.Column spacing={3}>
                                     <FormGroup className="mb-3">
@@ -433,7 +433,7 @@ export default class DevBoard extends React.Component {
 
                             <Grid.Row columns={2}>
                                 <Grid.Column textAlign="center">
-                                    Assigned to:
+                                    <strong>Assigned to:</strong>
                                 </Grid.Column>
                                 <Grid.Column>
                                     {this.state.userStroyShow.asigned_to ?
@@ -452,7 +452,7 @@ export default class DevBoard extends React.Component {
 
                             <Grid.Row columns={2}>
                                 <Grid.Column textAlign="center">
-                                    Due date:
+                                    <strong>Due date:</strong>
                                 </Grid.Column>
                                 <Grid.Column>
                                     {this.state.userStroyShow.due_date}
@@ -465,7 +465,7 @@ export default class DevBoard extends React.Component {
 
                                     <Grid.Row columns={2}>
                                         <Grid.Column textAlign="center">
-                                            Validation
+                                           <strong>Validation</strong>
                                         </Grid.Column>
                                         <Grid.Column>
                                             <Checkbox toggle onChange={(event) => {

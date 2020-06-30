@@ -304,14 +304,23 @@ class Dashboard extends React.Component {
 
                                                         <Checkbox toggle checked={item1.isChecked}
                                                                   onChange={(event) => {
-                                                                      axios.patch('http://localhost:8000/secured/UserStory/PutIsComfirmed/' + item1.id, {isComfirmed: 1})
-                                                                      this.setState({
-                                                                          userstories: this.updateData()
 
-                                                                      })
-                                                                      item1.isChecked = true;
-                                                                      createNotification('info', "This userstory is comfirmed !")
 
+                                                                      var r = window.confirm("Are you sure!");
+                                                                      if (r == true) {
+                                                                          axios.patch('http://localhost:8000/secured/UserStory/PutIsComfirmed/' + item1.id, {isComfirmed: 1})
+                                                                          this.setState({
+                                                                              userstories: this.updateData()
+
+                                                                          })
+                                                                          item1.isChecked = true;
+                                                                          createNotification('info', "This userstory is comfirmed !")
+
+
+                                                                      } else {
+                                                                          createNotification('error', 'cancellation')
+
+                                                                      }
 
                                                                   }}
                                                         />
@@ -351,27 +360,38 @@ class Dashboard extends React.Component {
                                                     <Grid.Column textAlign="center">
 
                                                         <Checkbox toggle checked={proj.isChecked} onChange={(event) => {
-                                                            axios.patch('http://localhost:8000/secured/project/ProjectDone/' + proj.id)
-                                                            axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
-                                                                .then(response => {
-                                                                    var p = [];
-                                                                    response.data.map((val) => {
-                                                                        if (val.done == 0) {
-                                                                            p.push(val)
-                                                                        }
-                                                                    })
-                                                                    this.setState({
-                                                                        projects: p
 
-                                                                    })
-                                                                    this.setState({
-                                                                        projectsLength: p.length
 
-                                                                    })
-                                                                })
+                                                            var r = window.confirm("Are you sure!");
+                                                            if (r == true) {
+                                                                axios.patch('http://localhost:8000/secured/project/ProjectDone/' + proj.id)
+                                                                axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+                                                                    .then(response => {
+                                                                        var p = [];
+                                                                        response.data.map((val) => {
+                                                                            if (val.done == 0) {
+                                                                                p.push(val)
+                                                                            }
+                                                                        })
+                                                                        this.setState({
+                                                                            projects: p
 
-                                                            proj.isChecked = false;
-                                                            createNotification('info', "This project is done !")
+                                                                        })
+                                                                        this.setState({
+                                                                            projectsLength: p.length
+
+                                                                        })
+                                                                    })
+
+                                                                proj.isChecked = false;
+                                                                createNotification('info', "This project is done !")
+
+
+                                                            } else {
+                                                                proj.isChecked=false
+                                                                createNotification('error', 'cancellation')
+
+                                                            }
 
 
                                                         }}

@@ -3,7 +3,7 @@ import {Button, Card, CardBody, Col, Input, Modal, ModalBody, ModalFooter, Modal
 import axios from 'axios';
 import {FormGroup} from "react-bootstrap";
 import {Link} from "react-router-dom";
-import {createNotification} from "./Common";
+import {checkEmptyObject, createNotification} from "./Common";
 import {NotificationContainer} from "react-notifications";
 
 let options = [];
@@ -64,28 +64,39 @@ class Backlog extends Component {
 
     addPriority() {
         this.state.newBacklogData.project = localStorage.getItem('projectid');
-        console.log("ba3d bind")
-        console.log(this.state)
+
         let {newBacklogData} = this.state;
         //newProjectData.Team = this.state.selectedOption;
         this.setState({newBacklogData});
-        axios.post('http://localhost:8000/secured/Backlog/backlogCreate', this.state.newBacklogData).then(
-            (response) => {
-                let {backlogs} = this.state;
-                backlogs.push(response.data);
-                this.setState({
-                    backlogs, newBacklogModal: false, newBacklogData: {
-                        title: '',
-                        rank: '',
-                        estimatedTime: '',
-                        startdate: '',
-                        sprint: '',
-                        project: ''
-                    }
-                });
+        if (checkEmptyObject(this.state.newBacklogData)) {
 
-            }
-        );
+            axios.post('http://localhost:8000/secured/Backlog/backlogCreate', this.state.newBacklogData).then(
+                (response) => {
+                    let {backlogs} = this.state;
+                    backlogs.push(response.data);
+                    this.setState({
+                        backlogs, newBacklogModal: false, newBacklogData: {
+                            title: '',
+                            rank: '',
+                            estimatedTime: '',
+                            startdate: '',
+                            sprint: '',
+                            project: ''
+                        }
+                    });
+
+                }
+            );
+            createNotification('success', 'New Backlog Added 😀')
+            axios.get(`http://localhost:8000/secured/Backlog/BacklogList/` + localStorage.getItem('projectid'))
+                .then(response => {
+                    this.setState({
+                        backlogs: response.data
+                    })
+                })
+            ;
+        }
+
 
     }
 
@@ -117,10 +128,26 @@ class Backlog extends Component {
     }
 
     deleteProperty(id) {
-        axios.delete('http://localhost:8000/secured/Backlog/BacklogDelete/' + id).then((response) => {
-                window.location.reload();
-            }
-        )
+
+        var r = window.confirm("Are you sure!");
+        if (r == true) {
+            axios.delete('http://localhost:8000/secured/Backlog/BacklogDelete/' + id).then((response) => {
+                    createNotification('info', 'Backlog deleted')
+                axios.get(`http://localhost:8000/secured/Backlog/BacklogList/` + localStorage.getItem('projectid'))
+                    .then(response => {
+                        this.setState({
+                            backlogs: response.data
+                        })
+                    })
+                ;
+                }
+            )
+
+
+        } else {
+            createNotification('error', 'cancellation')
+
+        }
     }
 
     routeChange(backlog) {
@@ -133,7 +160,7 @@ class Backlog extends Component {
     }
 
     checkDate(dateBacklog, dateStart, dateEnd) {
-        if (this.state.backlogs.length>0){
+        if (this.state.backlogs.length > 0) {
             var backlog = this.state.backlogs;
             console.log(backlog)
             var result = new Date(backlog[backlog.length - 1].startdate);
@@ -149,14 +176,13 @@ class Backlog extends Component {
                 return false
             } else return true
         } else {
-            if (dateBacklog < dateStart || dateBacklog > dateEnd ) {
+            if (dateBacklog < dateStart || dateBacklog > dateEnd) {
                 if (dateBacklog < dateStart || dateBacklog > dateEnd) {
                     createNotification('error', 'Minimum date ' + dateStart + ' and maximum date ' + dateEnd)
                 }
 
                 return false
-            }
-            else return true
+            } else return true
 
         }
 
@@ -234,11 +260,10 @@ class Backlog extends Component {
                                                         <Input id="startDate" type="number" min="7" max="30"
                                                                value={this.state.newBacklogData.estimatedTime}
                                                                onChange={(e) => {
-                                                                   if (e.target.value<0 || e.target.value>30){
+                                                                   if (e.target.value < 0 || e.target.value > 30) {
                                                                        createNotification('error', 'wrong sprint estimation,Maximum 30 and Minimum 7.')
 
-                                                                   }
-                                                                   else {
+                                                                   } else {
                                                                        let {newBacklogData} = this.state;
                                                                        newBacklogData.estimatedTime = e.target.value;
                                                                        this.setState({newBacklogData});
@@ -257,7 +282,7 @@ class Backlog extends Component {
                                                                    })
 
                                                                    if (arr.includes(parseInt(e.target.value)) || parseInt(e.target.value) > JSON.parse(contole).sprint_num) {
-                                                                       createNotification('error', 'wrong sprint,the sprints '+arr+' already taken and maximum sprint '+JSON.parse(contole).sprint_num)
+                                                                       createNotification('error', 'wrong sprint,the sprints ' + arr + ' already taken and maximum sprint ' + JSON.parse(contole).sprint_num)
 
                                                                    } else {
                                                                        let {newBacklogData} = this.state;

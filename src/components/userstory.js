@@ -3,7 +3,7 @@ import {Button, Card, CardBody, Col, Input, Modal, ModalBody, ModalFooter, Modal
 import axios from 'axios';
 import {FormGroup} from "react-bootstrap";
 import Select from 'react-select';
-import {createNotification} from "./Common";
+import {checkEmptyObject, createNotification} from "./Common";
 import {NotificationContainer} from "react-notifications";
 
 
@@ -226,28 +226,43 @@ class UserStory extends Component {
         this.state.newUserStoryData.backlog = localStorage.getItem('backlogid');
         let {newUserStoryData} = this.state;
         this.setState({newUserStoryData});
-        axios.post('http://localhost:8000/secured/UserStory/UserStoryCreate', this.state.newUserStoryData).then(
-            (response) => {
-                let {userstories} = this.state;
-                userstories.push(response.data);
 
-                this.setState({
-                    userstories, newUserStoryModal: false, newUserStoryData: {
-                        subject: '',
-                        content: '',
-                        estimatedTime: '',
-                        dueDate: '',
-                        tags: '',
-                        priority: '',
-                        status: '',
-                        backlog: '',
-                        asignedTo: '',
-                        activity: ''
 
-                    }
-                });
-            }
-        );
+        if (checkEmptyObject(this.state.newUserStoryData)) {
+            axios.post('http://localhost:8000/secured/UserStory/UserStoryCreate', this.state.newUserStoryData).then(
+                (response) => {
+                    let {userstories} = this.state;
+                    userstories.push(response.data);
+
+                    this.setState({
+                        userstories, newUserStoryModal: false, newUserStoryData: {
+                            subject: '',
+                            content: '',
+                            estimatedTime: '',
+                            dueDate: '',
+                            tags: '',
+                            priority: '',
+                            status: '',
+                            backlog: '',
+                            asignedTo: '',
+                            activity: ''
+
+                        }
+                    });
+                    createNotification('success', 'New User Story Added 😀')
+                    axios.get(`http://localhost:8000/secured/UserStory/userStoryList/` + localStorage.getItem('backlogid'))
+                        .then(response => {
+                            this.setState({
+                                UserStoriesoptions: response.data
+                            })
+                        })
+                    ;
+
+                }
+            );
+
+        }
+
 
     }
 
@@ -310,11 +325,26 @@ class UserStory extends Component {
     }
 
     deleteProperty(id) {
-        axios.delete('http://localhost:8000/secured/UserStory/userStoryDelete/' + id).then((response) => {
-                window.location.reload();
 
-            }
-        )
+        var r = window.confirm("are you sure!");
+        if (r == true) {
+            axios.delete('http://localhost:8000/secured/UserStory/userStoryDelete/' + id).then((response) => {
+                    createNotification('info', 'User Story deleted')
+                    axios.get(`http://localhost:8000/secured/UserStory/userStoryList/` + localStorage.getItem('backlogid'))
+                        .then(response => {
+                            this.setState({
+                                UserStoriesoptions: response.data
+                            })
+                        })
+                    ;
+
+                }
+            )
+
+        } else {
+            createNotification('error', 'cancellation')
+
+        }
     }
 
     checkDate(dateUserStory) {

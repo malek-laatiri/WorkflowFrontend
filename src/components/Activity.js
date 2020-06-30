@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Button, Card, CardBody, Col, Input, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table} from "reactstrap";
 import axios from 'axios';
 import {FormGroup} from "react-bootstrap";
+import {createNotification} from "./Common";
 
 class Activity extends Component {
     state = {
@@ -28,7 +29,7 @@ class Activity extends Component {
                 this.setState({
                     activities: response.data
                 })
-            }).then(console.log(this.state))
+            })
         ;
 
     }
@@ -61,7 +62,13 @@ class Activity extends Component {
                     }
                 });
                 console.log(response.data);
-                window.location.reload();
+                axios.get(`http://localhost:8000/secured/activity/activities`)
+                    .then(response => {
+                        this.setState({
+                            activities: response.data
+                        })
+                    })
+                ;
 
             }
         );
@@ -94,10 +101,26 @@ class Activity extends Component {
     }
 
     deleteProperty(id) {
-        axios.delete('http://localhost:8000/secured/Activity/activityDelete/' + id).then((response) => {
 
-            }
-        )
+        var r = window.confirm("Are you sure!");
+        if (r == true) {
+            axios.delete('http://localhost:8000/secured/activity/activityDelete/' + id).then((response) => {
+                createNotification('info', 'done')
+                axios.get(`http://localhost:8000/secured/activity/activities`)
+                    .then(response => {
+                        this.setState({
+                            activities: response.data
+                        })
+                    })
+                ;
+
+                }
+            )
+
+        } else {
+            createNotification('error', 'cancellation')
+
+        }
     }
 
     render() {

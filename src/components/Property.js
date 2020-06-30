@@ -3,6 +3,7 @@ import {Button, Card, CardBody, Col, Input, Modal, ModalBody, ModalFooter, Modal
 import axios from 'axios';
 import {FormGroup} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {createNotification} from "./Common";
 
 class Property extends Component {
     state = {
@@ -26,7 +27,7 @@ class Property extends Component {
                 this.setState({
                     books: response.data
                 })
-            }).then(console.log(this.state))
+            })
         ;
     }
 
@@ -57,7 +58,13 @@ class Property extends Component {
                     }
                 });
                 console.log(response.data);
-                window.location.reload();
+                axios.get(`http://localhost:8000/secured/priority/priorityList`)
+                    .then(response => {
+                        this.setState({
+                            books: response.data
+                        })
+                    })
+                ;
 
             }
         );
@@ -74,8 +81,13 @@ class Property extends Component {
                         name: ''
                     }
                 });
-                console.log(response.data);
-                window.location.reload();
+                axios.get(`http://localhost:8000/secured/priority/priorityList`)
+                    .then(response => {
+                        this.setState({
+                            books: response.data
+                        })
+                    })
+                ;
 
             }
         );
@@ -90,11 +102,27 @@ class Property extends Component {
     }
 
     deleteProperty(id) {
-        axios.delete('http://localhost:8000/secured/priority/priorityDelete/' + id).then((response) => {
-                window.location.reload();
 
-            }
-        )
+        var r = window.confirm("are you sure!");
+        if (r == true) {
+
+            axios.delete('http://localhost:8000/secured/priority/priorityDelete/' + id).then((response) => {
+                createNotification('info', 'Priority deleted')
+                axios.get(`http://localhost:8000/secured/priority/priorityList`)
+                    .then(response => {
+                        this.setState({
+                            books: response.data
+                        })
+                    })
+                ;
+
+                }
+            )
+
+        } else {
+            createNotification('error', 'cancellation')
+
+        }
     }
 
     render() {

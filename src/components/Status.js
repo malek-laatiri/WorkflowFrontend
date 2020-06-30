@@ -3,6 +3,8 @@ import {Button, Card, CardBody, Col, Input, Modal, ModalBody, ModalFooter, Modal
 import axios from 'axios';
 import {FormGroup} from "react-bootstrap";
 import Select from "react-select";
+import {createNotification} from "./Common";
+
 let options = [];
 
 class StatusDemo extends Component {
@@ -13,8 +15,8 @@ class StatusDemo extends Component {
         editstatusModal: false,
         newstatusData: {
             name: '',
-            role:'',
-            project:localStorage.getItem('projectid')
+            role: '',
+            project: localStorage.getItem('projectid')
         },
         editstatusData: {
             name: ''
@@ -25,12 +27,12 @@ class StatusDemo extends Component {
 
     componentWillMount() {
 
-        axios.get(`http://localhost:8000/secured/status/StatusListSecond/`+localStorage.getItem('projectid'))
+        axios.get(`http://localhost:8000/secured/status/StatusListSecond/` + localStorage.getItem('projectid'))
             .then(response => {
                 this.setState({
                     status: response.data.data
                 })
-            }).then(console.log(this.state))
+            })
         ;
         axios.get(`http://localhost:8000/secured/users/AllRoles`)
             .then(response => {
@@ -55,6 +57,7 @@ class StatusDemo extends Component {
             newstatusModal: !this.state.newstatusModal
         })
     }
+
     handleChange = selectedOption => {
         this.setState(
             {selectedOption},
@@ -62,9 +65,10 @@ class StatusDemo extends Component {
         );
 
         this.state.newstatusData.role = selectedOption.value;
-console.log(this.state)
+        console.log(this.state)
 
     };
+
     toggleEditBookModal() {
         this.setState({
             editstatusModal: !this.state.editstatusModal
@@ -82,7 +86,13 @@ console.log(this.state)
                         name: ''
                     }
                 });
-                window.location.reload();
+                axios.get(`http://localhost:8000/secured/status/StatusListSecond/`+localStorage.getItem('projectid'))
+                    .then(response => {
+                        this.setState({
+                            status: response.data.data
+                        })
+                    })
+                ;
 
             }
         );
@@ -101,7 +111,13 @@ console.log(this.state)
                     }
                 });
                 console.log(response.data);
-                window.location.reload();
+                axios.get(`http://localhost:8000/secured/status/StatusListSecond/`+localStorage.getItem('projectid'))
+                    .then(response => {
+                        this.setState({
+                            status: response.data.data
+                        })
+                    })
+                ;
 
             }
         );
@@ -115,11 +131,26 @@ console.log(this.state)
     }
 
     deleteProperty(id) {
-        axios.delete('http://localhost:8000/secured/status/StatusDelete/' + id).then((response) => {
-                window.location.reload();
 
-            }
-        )
+
+        var r = window.confirm("Are you sure!");
+        if (r == true) {
+            axios.delete('http://localhost:8000/secured/status/StatusDelete/' + id).then((response) => {
+                    createNotification('info', 'done')
+                axios.get(`http://localhost:8000/secured/status/StatusListSecond/`+localStorage.getItem('projectid'))
+                    .then(response => {
+                        this.setState({
+                            status: response.data.data
+                        })
+                    })
+                ;
+
+                }
+            )
+        } else {
+            createNotification('error', 'cancellation')
+
+        }
     }
 
     render() {
