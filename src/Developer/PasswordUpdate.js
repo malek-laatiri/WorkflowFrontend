@@ -4,6 +4,7 @@ import axios from "axios";
 import {getUser} from "../components/Common";
 import 'react-notifications/lib/notifications.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
+import {ProgressBar} from "react-bootstrap";
 
 let options = [];
 
@@ -18,7 +19,10 @@ class PasswordUpdate extends React.Component {
             password: '',
 
         },
-        selectedOption: null
+        selectedOption: null,
+        progress:'',
+        progressStrength:'',
+        progressVariant:''
 
     }
     createNotification = (type, msg) => {
@@ -45,6 +49,51 @@ class PasswordUpdate extends React.Component {
     validatePassword(password) {
         var re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
         return re.test(password);
+    }
+
+    validatePasswordScore(password) {
+        var score = 0;
+        var OneLowerCase = /[a-z]/;     // should contain at least one lower case
+        var UpperCase = /[A-Z]/;   // should contain at least one upper case
+        var length = /[^0-9a-zA-Z]/; // should contain at least 8 from the mentioned characters
+
+        password.length>8?score+=25:score+=0;
+        OneLowerCase.test(password) ? score+=25 : score += 0
+        UpperCase.test(password) ? score+=25 : score += 0
+        length.test(password) ? score+=25 : score += 0
+        return score;
+    }
+    createPasswordLabel = (result) => {
+        switch (result) {
+            case 25:
+                return 'Weak';
+            case 25:
+                return 'Weak';
+            case 50:
+                return 'Fair';
+            case 75:
+                return 'Good';
+            case 100:
+                return 'Strong';
+            default:
+                return 'Weak';
+        }
+    }
+    createPasswordVariant = (result) => {
+        switch (result) {
+            case 25:
+                return 'danger';
+            case 25:
+                return 'danger';
+            case 50:
+                return 'warning';
+            case 75:
+                return 'info';
+            case 100:
+                return 'success';
+            default:
+                return 'danger';
+        }
     }
 
     validate = () => {
@@ -109,11 +158,19 @@ class PasswordUpdate extends React.Component {
                                                         onChange={(e) => {
                                                             let {newUserData} = this.state;
                                                             newUserData.password = e.target.value;
+                                                            this.state.progress=this.validatePasswordScore(e.target.value);
+                                                            this.state.progressStrength=this.createPasswordLabel(this.state.progress);
+                                                            this.state.progressVariant=this.createPasswordVariant(this.state.progress)
                                                             this.setState({newUserData});
                                                         }}
                                                         placeholder="password"
                                                         type="password"
                                                     />
+                                                    <ProgressBar
+                                                        now={this.state.progress}
+                                                        variant={this.state.progressVariant}
+                                                    />
+                                                    <strong>{this.state.progressStrength}</strong>
                                                 </FormGroup>
                                             </Col>
                                         </Row>

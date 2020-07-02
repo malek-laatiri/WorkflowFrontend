@@ -238,7 +238,7 @@ export default class DevBoard extends React.Component {
                                 <>
                                     <Grid.Row columns={2} spacing={3}>
                                         <Grid.Column textAlign="center">
-                                            Put Label:
+                                            <strong>Put Label:</strong>
                                         </Grid.Column>
                                         <Grid.Column spacing={3}>
                                             <Select

@@ -132,10 +132,8 @@ class Property extends Component {
                     <td>{book.name}</td>
                     <td>
                         <Button color="success" className="mr-2"
-                                onClick={this.editProperty.bind(this, book.id, book.name)}><i
-                            className="fas fa-edit"></i></Button>
-                        <Button color="danger" onClick={this.deleteProperty.bind(this, book.id)}><i
-                            className="fas fa-trash"></i></Button>
+                                onClick={this.editProperty.bind(this, book.id, book.name)}>Edit</Button>
+                        <Button color="danger" onClick={this.deleteProperty.bind(this, book.id)}>delete</Button>
                     </td>
                 </tr>
             )
@@ -153,7 +151,7 @@ class Property extends Component {
                                     <div className="content">
                                         <div className="card-header">
                                             <Button color="primary" class="my-3"
-                                                    onClick={this.toggleNewBookModal.bind(this)}> <i className="far fa-plus-square"></i>
+                                                    onClick={this.toggleNewBookModal.bind(this)}> add priority
 
                                             </Button>
                                             {/*POST*/}
@@ -175,11 +173,9 @@ class Property extends Component {
                                                     </FormGroup>
                                                 </ModalBody>
                                                 <ModalFooter>
-                                                    <Button color="primary" onClick={this.addPriority.bind(this)}><i
-                                                        className="fas fa-check-square"></i></Button>
-                                                    <Button color="warning"
-                                                            onClick={this.toggleNewBookModal.bind(this)}><i
-                                                        className="far fa-window-close"></i></Button>
+                                                    <Button color="primary" onClick={this.addPriority.bind(this)}>add</Button>
+                                                    <Button color="danger"
+                                                            onClick={this.toggleNewBookModal.bind(this)}>cancel</Button>
                                                 </ModalFooter>
                                             </Modal>
 

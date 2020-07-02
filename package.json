@@ -57,6 +57,7 @@
     "react-native-text-ticker": "^1.0.0",
     "react-notification-alert": "0.0.12",
     "react-notifications": "^1.5.0-beta.0",
+    "react-password-strength": "^2.4.0",
     "react-router": "5.0.0",
     "react-router-dom": "5.0.0",
     "react-router-guards": "^1.0.1",
