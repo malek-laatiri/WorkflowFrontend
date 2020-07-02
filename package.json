@@ -49,6 +49,7 @@
     "react-elastic-carousel": "^0.6.1",
     "react-google-charts": "^3.0.15",
     "react-google-maps": "9.4.5",
+    "react-google-recaptcha": "^2.1.0",
     "react-hook-form": "^5.0.3",
     "react-input-color": "^2.0.29",
     "react-input-files": "^1.2.0",

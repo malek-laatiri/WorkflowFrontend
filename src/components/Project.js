@@ -22,15 +22,15 @@ class Project extends Component {
             startDate: '',
             dueDate: '',
             createdBy: '',
-            sprintNum:'',
+            sprintNum: '',
             Team: []
         },
         editProjectData: {
             name: '',
             startDate: '',
             dueDate: '',
-            sprintNum:'',
-            done:'',
+            sprintNum: '',
+            done: '',
             createdBy: ''
         },
         selectedOption: null
@@ -100,7 +100,7 @@ class Project extends Component {
         this.state.newProjectData.createdBy = getUser().id;
         let {newProjectData} = this.state;
         this.setState({newProjectData});
-        if (checkEmptyObject(this.state.newProjectData)){
+        if (checkEmptyObject(this.state.newProjectData)) {
             this.state.selectedOption.forEach(element => this.state.newProjectData.Team.push(element.value));
             axios.post('http://localhost:8000/secured/project/projectCreate', this.state.newProjectData).then(
                 (response) => {
@@ -112,7 +112,7 @@ class Project extends Component {
                             name: '',
                             startDate: '',
                             dueDate: '',
-                            sprintNum:'',
+                            sprintNum: '',
                             createdBy: '',
                             Team: []
 
@@ -136,7 +136,7 @@ class Project extends Component {
     updateProperty() {
         axios.patch('http://localhost:8000/secured/project/ProjectUpdate/' + this.state.editProjectData.id, this.state.editProjectData).then(
             (response) => {
-                this.state.editProjectData.createdBy=getUser().id;
+                this.state.editProjectData.createdBy = getUser().id;
                 let {projects} = this.state;
                 projects.push(response.data);
                 this.setState({
@@ -145,8 +145,8 @@ class Project extends Component {
                         startDate: '',
                         dueDate: '',
                         createdBy: '',
-                        done:'',
-                        sprintNum:'',
+                        done: '',
+                        sprintNum: '',
                         Team: []
                     }
                 });
@@ -162,10 +162,12 @@ class Project extends Component {
         );
     }
 
-    editProperty(id, name, startDate, dueDate,done,createdBy,sprintNum) {
+    editProperty(id, name, startDate, dueDate, done, createdBy, sprintNum) {
         this.setState({
-            editProjectData: {id, name, startDate, dueDate,done,sprintNum,createdBy}, editProjectModal: !this.state.editProjectModal
+            editProjectData: {id, name, startDate, dueDate, sprintNum, done, createdBy},
+            editProjectModal: !this.state.editProjectModal
         });
+        console.log(this.state.editProjectData)
     }
 
     deleteProperty(id) {
@@ -173,14 +175,14 @@ class Project extends Component {
         var r = window.confirm("are you sure!");
         if (r == true) {
             axios.delete('http://localhost:8000/secured/project/projectDelete/' + id).then((response) => {
-                createNotification('info', 'Project deleted')
-                axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
-                    .then(response => {
-                        this.setState({
-                            projects: response.data
+                    createNotification('info', 'Project deleted')
+                    axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+                        .then(response => {
+                            this.setState({
+                                projects: response.data
+                            })
                         })
-                    })
-                ;
+                    ;
 
                 }
             )
@@ -192,7 +194,7 @@ class Project extends Component {
     }
 
     routeChange(project) {
-        localStorage.setItem('projectid',project.id);
+        localStorage.setItem('projectid', project.id);
         let path = `Backlog/BacklogList/` + project.id;
         localStorage.setItem('projectStartDate', project.start_date);
         localStorage.setItem('projectdataDueDate', project.due_date);
@@ -215,9 +217,11 @@ class Project extends Component {
                     </td>
                     <td>{book.start_date}</td>
                     <td>{book.due_date}</td>
+                    <td>{book.sprint_num}</td>
+
                     <td>
                         <Button color="success" className="mr-2"
-                                onClick={this.editProperty.bind(this, book.id, book.name, book.start_date, book.due_date,book.done)}>Edit</Button>
+                                onClick={this.editProperty.bind(this, book.id, book.name, book.start_date, book.due_date, book.done, getUser().id, book.sprint_num)}>Edit</Button>
                         <Button color="danger" onClick={this.deleteProperty.bind(this, book.id)}>Delete</Button>
 
                     </td>
@@ -270,15 +274,27 @@ class Project extends Component {
                                                                value={this.state.newProjectData.startDate}
                                                                onChange={(e) => {
 
-                                                                   if (new Date(e.target.value).toISOString().split('T')[0]>=(new Date().toISOString().split('T')[0])){
+                                                                   if (new Date(e.target.value).toISOString().split('T')[0] >= (new Date().toISOString().split('T')[0])) {
                                                                        let {newProjectData} = this.state;
                                                                        newProjectData.startDate = e.target.value;
                                                                        this.setState({newProjectData});
-                                                                   }else {
+                                                                   } else {
                                                                        createNotification('error', 'Wrong Date')
+                                                                       e.target.value = ''
+
 
                                                                    }
+                                                                   if (this.state.newProjectData.dueDate.length > 0) {
+                                                                       if (new Date(e.target.value).toISOString().split('T')[0] > (new Date(this.state.newProjectData.dueDate).toISOString().split('T')[0])) {
+                                                                           this.state.newProjectData.startDate = ''
+                                                                           createNotification('error', 'Wrong Date')
 
+                                                                       } else {
+                                                                           let {newProjectData} = this.state;
+                                                                           newProjectData.startDate = e.target.value;
+                                                                           this.setState({newProjectData});
+                                                                       }
+                                                                   }
 
                                                                }}/>
                                                         <label htmlFor="dueDate">Due Date</label>
@@ -286,15 +302,15 @@ class Project extends Component {
                                                         <Input id="dueDate" type="date"
                                                                value={this.state.newProjectData.dueDate}
                                                                onChange={(e) => {
-                                                                  if (e.target.value<new Date().toISOString() || e.target.value<this.state.newProjectData.startDate){
-                                                                      createNotification('error', 'Wrong Date')
-                                                                      e.target.value=''
-                                                                  }else {
-                                                                      let {newProjectData} = this.state;
-                                                                      newProjectData.dueDate = e.target.value;
-                                                                      this.setState({newProjectData});
+                                                                   if (e.target.value < new Date().toISOString() || e.target.value < this.state.newProjectData.startDate) {
+                                                                       createNotification('error', 'Wrong Date')
+                                                                       e.target.value = ''
+                                                                   } else {
+                                                                       let {newProjectData} = this.state;
+                                                                       newProjectData.dueDate = e.target.value;
+                                                                       this.setState({newProjectData});
 
-                                                                  }
+                                                                   }
                                                                }}/>
                                                         <label htmlFor="Team">Project Members</label>
 
@@ -355,6 +371,16 @@ class Project extends Component {
                                                                    this.setState({editProjectData});
 
                                                                }}/>
+                                                        <label htmlFor="name">Number Of Sprints</label>
+                                                        <Input id="sprintNum"
+                                                               type="number" min="0"
+                                                               value={this.state.editProjectData.sprintNum}
+                                                               onChange={(e) => {
+                                                                   let {editProjectData} = this.state;
+                                                                   editProjectData.sprintNum = e.target.value;
+                                                                   this.setState({editProjectData});
+
+                                                               }}/>
                                                         <label htmlFor="due_date">Done</label>
 
                                                         <Input id="due_date" type="checkbox"
@@ -380,9 +406,11 @@ class Project extends Component {
                                                 <thead>
                                                 <tr>
 
-                                                    <th>name</th>
-                                                    <th>start date</th>
-                                                    <th>due date</th>
+                                                    <th>Name</th>
+                                                    <th>Start Date</th>
+                                                    <th>DUe Date</th>
+                                                    <th>Sprint number</th>
+
                                                     <th>Actions</th>
                                                 </tr>
                                                 </thead>
