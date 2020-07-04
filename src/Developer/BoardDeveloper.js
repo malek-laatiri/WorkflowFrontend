@@ -172,7 +172,7 @@ export default class BoardDeveloper extends React.Component {
                                     striped={true}
                                     highlightOnHover={true}
                                     persistTableHead={true}
-                                    //theme="solarized"
+                                    //theme="dark"
                                 />
                             </CardContent>
                         </Card>

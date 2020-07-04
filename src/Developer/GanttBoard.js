@@ -51,7 +51,7 @@ export default class GanttBoard extends React.Component {
                     duration: element.estimated_time,
                     progress: '',
                     open: true
-                    // ,color:"#2f4b7c"
+                    ,color:'#004c6d',progressColor:'#6996b3',
                 };
                 element.user_stories.map((x) => {
                     countx++
@@ -60,7 +60,7 @@ export default class GanttBoard extends React.Component {
                         countComfirmed++
                     }
                     let JSONElem = {
-                        id: countx, text: x.subject, start_date: x.due_date,
+                        id: countx, text: x.subject, start_date: x.due_date,color:'#008bad',progressColor:'#00a1c1',
                         duration: x.estimated_time, progress: x.progress, parent: JSONitem.id
                     }
                     JSONitem.progress = (countComfirmed * 100 / count) / 100;

@@ -42,7 +42,7 @@ export default class Calendar extends React.Component {
                 color: this.colorPalette[Math.floor(Math.random() * this.colorPalette.length)],
                 textColor: "white",
                 extendedProps: {
-                    text: ''
+                    text: project.name+" "+project.start_date+" to "+project.due_date
                 },
                 description: ''
             }
@@ -54,7 +54,7 @@ export default class Calendar extends React.Component {
                         color: this.colorPalette[Math.floor(Math.random() * this.colorPalette.length)],
                         textColor: 'white',
                         extendedProps: {
-                            text: ''
+                            text: backlog.title+" "+backlog.startdate
                         },
                         description: ''
                     }
@@ -67,7 +67,7 @@ export default class Calendar extends React.Component {
                                 color: "#B03A2E",
                                 textColor: 'white',
                                 extendedProps: {
-                                    text: ''
+                                    text: userStory.subject+" "+userStory.due_date
                                 },
                                 description: ''
                             }
@@ -107,7 +107,7 @@ export default class Calendar extends React.Component {
                                   }}
                                   dateClick={this.handleDateClick}
                                   eventClick={function (info) {
-                                      alert(info.event.extendedProps);
+                                      alert(JSON.stringify(info.event.extendedProps.text));
                                       // {description: "Lecture", department: "BioChemistry"}
                                   }}
                                   events={this.func()}/>
