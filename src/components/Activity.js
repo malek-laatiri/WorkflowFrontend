@@ -27,7 +27,7 @@ class Activity extends Component {
         axios.get(`http://localhost:8000/secured/activity/activities`)
             .then(response => {
                 this.setState({
-                    activities: response.data
+                    activities: response.data.data
                 })
             })
         ;
@@ -65,7 +65,7 @@ class Activity extends Component {
                 axios.get(`http://localhost:8000/secured/activity/activities`)
                     .then(response => {
                         this.setState({
-                            activities: response.data
+                            activities: response.data.data
                         })
                     })
                 ;
@@ -109,7 +109,7 @@ class Activity extends Component {
                 axios.get(`http://localhost:8000/secured/activity/activities`)
                     .then(response => {
                         this.setState({
-                            activities: response.data
+                            activities: response.data.data
                         })
                     })
                 ;

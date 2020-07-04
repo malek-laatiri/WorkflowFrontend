@@ -57,7 +57,7 @@ class Dashboard extends React.Component {
         axios.get(`http://localhost:8000/secured/activity/activities`)
             .then(response => {
                 let activities = [];
-                response.data.map((element) => {
+                response.data.data.map((element) => {
                     activity.push(0);
                     activities.push(element.name)
                 })

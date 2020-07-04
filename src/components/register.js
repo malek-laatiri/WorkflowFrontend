@@ -52,10 +52,9 @@ class Register extends React.Component {
 
         axios.get(`http://localhost:8000/secured/users/AllRoles`)
             .then(response => {
-                console.log(response.data);
+                console.log(response.data.data);
                 if (options.length === 0) {
-                    for (var item in response.data) {
-                        console.log(response.data[item])
+                    for (var item in response.data.data) {
                         options.push({label: `${item}`, value: `${item}`})
 
                     }

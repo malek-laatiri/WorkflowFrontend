@@ -75,21 +75,21 @@ class UserStory extends Component {
         axios.get(`http://localhost:8000/secured/priority/priorityList`)
             .then(response => {
                 this.setState({
-                    priorityList: response.data
+                    priorityList: response.data.data
                 })
             })
         ;
-        axios.get(`http://localhost:8000/secured/status/StatusList/` + localStorage.getItem('projectid'))
+        axios.get(`http://localhost:8000/secured/status/StatusListThree/` + localStorage.getItem('projectid'))
             .then(response => {
                 this.setState({
-                    statusList: response.data
+                    statusList: response.data.data
                 })
             })
         ;
         axios.get(`http://localhost:8000/secured/activity/activities`)
             .then(response => {
                 this.setState({
-                    activityList: response.data
+                    activityList: response.data.data
                 })
             })
         ;
