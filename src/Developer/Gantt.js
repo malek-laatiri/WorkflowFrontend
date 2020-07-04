@@ -7,7 +7,17 @@ export default class Gantt extends Component {
         gantt.config.xml_date = "%Y-%m-%d %H:%i";
         const {tasks} = this.props;
         gantt.config.readonly = true;
+        gantt.config.columns = [
+            { name:"text", tree:true, width:"*", resize:true },
+            { name:"start_date", align: "center"},
+            { name:"duration", align: "center", width:70 },
+        ];
         gantt.config.autosize = "y";
+        gantt.config.grid_elastic_columns = true;
+        gantt.config.grid_resizer_column_attribute = "data-column-index";
+        gantt.config.grid_resizer_attribute = "gridresizer";
+        gantt.config.grid_resize = true;
+
         gantt.init(this.ganttContainer);
         gantt.parse(tasks);
       

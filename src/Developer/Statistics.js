@@ -35,7 +35,7 @@ class Statistics extends Component {
         axios.get(`http://localhost:8000/secured/activity/activities`)
             .then(response => {
                 let activities = [];
-                response.data.map((element) => {
+                response.data.data.map((element) => {
                     activity.push(0);
                     activities.push(element.name)
                 })
@@ -51,9 +51,9 @@ class Statistics extends Component {
         axios.get(`http://localhost:8000/secured/project/ProjectStatistics/` + localStorage.getItem('projectid'))
             .then(response => {
                 this.setState({
-                    labels: response.data
+                    labels: response.data.data
                 })
-                response.data.map((element) => {
+                response.data.data.map((element) => {
                     element.user_stories.map((e) => {
                         totalNum++;
                         console.log(e);
