@@ -7,6 +7,7 @@ export default class Gantt extends Component {
         gantt.config.xml_date = "%Y-%m-%d %H:%i";
         const {tasks} = this.props;
         gantt.config.readonly = true;
+        gantt.config.autosize = "y";
         gantt.init(this.ganttContainer);
         gantt.parse(tasks);
       
@@ -61,7 +62,7 @@ export default class Gantt extends Component {
                 ref={(input) => {
                     this.ganttContainer = input
                 }}
-                style={{width: '100%', height: '880px'}}
+                style={{width: '100%', height: '100%'}}
             ></div>
         );
     }

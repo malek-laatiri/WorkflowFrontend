@@ -56,7 +56,7 @@ export default class DevBoard extends React.Component {
             .then(response => {
                 if (options.length === 0) {
 
-                    response.data.map((item) => {
+                    response.data.data.map((item) => {
                         options.push({label: item.name, value: item.id, color: item.color})
                     })
                 }

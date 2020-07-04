@@ -19,8 +19,10 @@ class StatusDemo extends Component {
             project: localStorage.getItem('projectid')
         },
         editstatusData: {
-            name: ''
-
+            id:'',
+            name: '',
+            role: '',
+            project: localStorage.getItem('projectid')
         }
     }
 
@@ -36,10 +38,8 @@ class StatusDemo extends Component {
         ;
         axios.get(`http://localhost:8000/secured/users/AllRoles`)
             .then(response => {
-                console.log(response.data);
                 if (options.length === 0) {
-                    for (var item in response.data) {
-                        console.log(response.data[item])
+                    for (var item in response.data.data) {
                         options.push({label: `${item}`, value: `${item}`})
 
                     }
@@ -65,7 +65,15 @@ class StatusDemo extends Component {
         );
 
         this.state.newstatusData.role = selectedOption.value;
-        console.log(this.state)
+
+    };
+    handleChangeUpdate = selectedOption => {
+        this.setState(
+            {selectedOption},
+            () => console.log(`Option selected:`, this.state.selectedOption)
+        );
+
+        this.state.editstatusData.role = selectedOption.value;
 
     };
 
@@ -100,17 +108,21 @@ class StatusDemo extends Component {
     }
 
     updateProperty() {
+        this.state.editstatusData.project=localStorage.getItem('projectid')
         axios.patch('http://localhost:8000/secured/status/statusUpdate/' + this.state.editstatusData.id, this.state.editstatusData).then(
             (response) => {
                 let {status} = this.state;
                 status.push(response.data);
                 this.setState({
                     status, editstatusModal: false, editstatusData: {
+                        id:'',
                         name: '',
+                        role: '',
+                        project: localStorage.getItem('projectid')
+
 
                     }
                 });
-                console.log(response.data);
                 axios.get(`http://localhost:8000/secured/status/StatusListSecond/`+localStorage.getItem('projectid'))
                     .then(response => {
                         this.setState({
@@ -123,9 +135,10 @@ class StatusDemo extends Component {
         );
     }
 
-    editProperty(id, name) {
+    editProperty(id,name,role) {
+        console.log(this.state.editstatusData)
         this.setState({
-            editstatusData: {id, name}, editstatusModal: !this.state.editstatusModal
+            editstatusData: {id,name,role}, editstatusModal: !this.state.editstatusModal
         });
 
     }
@@ -158,9 +171,11 @@ class StatusDemo extends Component {
             return (
                 <tr key={book.id}>
                     <td>{book.name}</td>
+                    <td>{book.role}</td>
+
                     <td>
                         <Button color="success" className="mr-2"
-                                onClick={this.editProperty.bind(this, book.id, book.name)}>Edit</Button>
+                                onClick={this.editProperty.bind(this,book.id,book.name,book.role)}>Edit</Button>
                         <Button color="danger" onClick={this.deleteProperty.bind(this, book.id)}>Delete</Button>
                     </td>
                 </tr>
@@ -231,7 +246,14 @@ class StatusDemo extends Component {
                                                                    this.setState({editstatusData});
 
                                                                }}/>
+                                                        <label htmlFor="Team">Available Roles</label>
 
+                                                        <Select
+                                                            value={this.state.selectedOption}
+                                                            onChange={this.handleChangeUpdate}
+                                                            options={options}
+                                                            isSearchable
+                                                        />
                                                     </FormGroup>
                                                 </ModalBody>
                                                 <ModalFooter>

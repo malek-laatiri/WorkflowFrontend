@@ -34,13 +34,13 @@ class Dashboard extends React.Component {
 
     componentWillMount() {
 
-        axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+        axios.get(`http://localhost:8000/secured/project/projectListPrime/` + getUser().id)
             .then(response => {
                 this.setState({
-                    status: response.data
+                    status: response.data.data
                 });
                 this.setState({
-                    projects: response.data
+                    projects: response.data.data
                 });
                 this.setState({
                     userstories: this.updateData()
@@ -75,10 +75,10 @@ class Dashboard extends React.Component {
     }
 
     updateData() {
-        axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+        axios.get(`http://localhost:8000/secured/project/projectListPrime/` + getUser().id)
             .then(response => {
                 this.setState({
-                    status: response.data
+                    status: response.data.data
                 })
 
                 var array = [];
@@ -365,10 +365,10 @@ class Dashboard extends React.Component {
                                                             var r = window.confirm("Are you sure!");
                                                             if (r == true) {
                                                                 axios.patch('http://localhost:8000/secured/project/ProjectDone/' + proj.id)
-                                                                axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+                                                                axios.get(`http://localhost:8000/secured/project/projectListPrime/` + getUser().id)
                                                                     .then(response => {
                                                                         var p = [];
-                                                                        response.data.map((val) => {
+                                                                        response.data.data.map((val) => {
                                                                             if (val.done == 0) {
                                                                                 p.push(val)
                                                                             }

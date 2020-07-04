@@ -40,7 +40,7 @@ class Backlog extends Component {
         axios.get(`http://localhost:8000/secured/Backlog/BacklogList/` + localStorage.getItem('projectid'))
             .then(response => {
                 this.setState({
-                    backlogs: response.data
+                    backlogs: response.data.data
                 })
             })
         ;
@@ -245,7 +245,7 @@ class Backlog extends Component {
                                                         <Input id="startDate" type="date"
                                                                value={this.state.newBacklogData.startdate}
                                                                onChange={(e) => {
-                                                                   if (this.checkDate(e.target.value, JSON.parse(localStorage.getItem('projectdata')).start_date, JSON.parse(localStorage.getItem('projectdata')).due_date)) {
+                                                                   if (this.checkDate(e.target.value, localStorage.getItem('projectStartDate'), localStorage.getItem('projectdataDueDate'))) {
                                                                        let {newBacklogData} = this.state;
                                                                        newBacklogData.startdate = e.target.value;
                                                                        this.setState({newBacklogData});
@@ -276,13 +276,12 @@ class Backlog extends Component {
                                                                value={this.state.newBacklogData.sprint}
                                                                onChange={(e) => {
                                                                    var arr = [];
-                                                                   var contole = localStorage.getItem("projectdata")
                                                                    this.state.backlogs.map((element) => {
                                                                        arr.push(element.sprint)
                                                                    })
 
-                                                                   if (arr.includes(parseInt(e.target.value)) || parseInt(e.target.value) > JSON.parse(contole).sprint_num) {
-                                                                       createNotification('error', 'wrong sprint,the sprints ' + arr + ' already taken and maximum sprint ' + JSON.parse(contole).sprint_num)
+                                                                   if (arr.includes(parseInt(e.target.value)) || parseInt(e.target.value) > localStorage.getItem("projectdataSprintNum")) {
+                                                                       createNotification('error', 'wrong sprint,the sprints ' + arr + ' already taken and maximum sprint ' + localStorage.getItem("projectdataSprintNum"))
 
                                                                    } else {
                                                                        let {newBacklogData} = this.state;

@@ -39,10 +39,10 @@ class Project extends Component {
 
     componentWillMount() {
 
-        axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+        axios.get(`http://localhost:8000/secured/project/projectListPrime/` + getUser().id)
             .then(response => {
                 this.setState({
-                    projects: response.data
+                    projects: response.data.data
                 })
             })
         ;
@@ -121,7 +121,7 @@ class Project extends Component {
 
                 }
             );
-            axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+            axios.get(`http://localhost:8000/secured/project/projectListPrime/` + getUser().id)
                 .then(response => {
                     this.setState({
                         projects: response.data
@@ -150,7 +150,7 @@ class Project extends Component {
                         Team: []
                     }
                 });
-                axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+                axios.get(`http://localhost:8000/secured/project/projectListPrime/` + getUser().id)
                     .then(response => {
                         this.setState({
                             projects: response.data
@@ -176,7 +176,7 @@ class Project extends Component {
         if (r == true) {
             axios.delete('http://localhost:8000/secured/project/projectDelete/' + id).then((response) => {
                     createNotification('info', 'Project deleted')
-                    axios.get(`http://localhost:8000/secured/project/projectList/` + getUser().id)
+                    axios.get(`http://localhost:8000/secured/project/projectListPrime/` + getUser().id)
                         .then(response => {
                             this.setState({
                                 projects: response.data
@@ -198,7 +198,8 @@ class Project extends Component {
         let path = `Backlog/BacklogList/` + project.id;
         localStorage.setItem('projectStartDate', project.start_date);
         localStorage.setItem('projectdataDueDate', project.due_date);
-        localStorage.setItem('projectdata', JSON.stringify(project));
+        localStorage.setItem('projectdataSprintNum', project.sprint_num);
+
 
         localStorage.removeItem('backlogid')
         this.props.history.push(path);

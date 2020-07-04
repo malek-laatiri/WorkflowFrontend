@@ -37,7 +37,7 @@ class FixedPlugin extends Component {
         axios.get(`http://localhost:8000/secured/label/labelsList/` + localStorage.getItem('projectid'))
             .then(response => {
                 this.setState({
-                    labels: response.data
+                    labels: response.data.data
                 })
             })
         ;

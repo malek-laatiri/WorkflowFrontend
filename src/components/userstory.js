@@ -64,10 +64,10 @@ class UserStory extends Component {
 
 
     componentWillMount() {
-        axios.get(`http://localhost:8000/secured/UserStory/userStoryList/` + localStorage.getItem('backlogid'))
+        axios.get(`http://localhost:8000/secured/UserStory/userStoryListPrime/` + localStorage.getItem('backlogid'))
             .then(response => {
                 this.setState({
-                    UserStoriesoptions: response.data
+                    UserStoriesoptions: response.data.data
                 })
             })
         ;
@@ -250,7 +250,7 @@ class UserStory extends Component {
                         }
                     });
                     createNotification('success', 'New User Story Added 😀')
-                    axios.get(`http://localhost:8000/secured/UserStory/userStoryList/` + localStorage.getItem('backlogid'))
+                    axios.get(`http://localhost:8000/secured/UserStory/userStoryListPrime/` + localStorage.getItem('backlogid'))
                         .then(response => {
                             this.setState({
                                 UserStoriesoptions: response.data
@@ -330,7 +330,7 @@ class UserStory extends Component {
         if (r == true) {
             axios.delete('http://localhost:8000/secured/UserStory/userStoryDelete/' + id).then((response) => {
                     createNotification('info', 'User Story deleted')
-                    axios.get(`http://localhost:8000/secured/UserStory/userStoryList/` + localStorage.getItem('backlogid'))
+                    axios.get(`http://localhost:8000/secured/UserStory/userStoryListPrime/` + localStorage.getItem('backlogid'))
                         .then(response => {
                             this.setState({
                                 UserStoriesoptions: response.data

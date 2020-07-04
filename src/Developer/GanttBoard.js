@@ -18,7 +18,7 @@ export default class GanttBoard extends React.Component {
         let res = await fetch(`http://localhost:8000/secured/Backlog/BacklogList/` + localStorage.getItem('projectid'));
         res = await res.json();
         this.setState({
-            backlog: res
+            backlog: res.data
         })
     }
 

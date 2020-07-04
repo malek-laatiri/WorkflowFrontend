@@ -25,7 +25,7 @@ class Property extends Component {
         axios.get(`http://localhost:8000/secured/priority/priorityList`)
             .then(response => {
                 this.setState({
-                    books: response.data
+                    books: response.data.data
                 })
             })
         ;
@@ -61,7 +61,7 @@ class Property extends Component {
                 axios.get(`http://localhost:8000/secured/priority/priorityList`)
                     .then(response => {
                         this.setState({
-                            books: response.data
+                            books: response.data.data
                         })
                     })
                 ;
@@ -84,7 +84,7 @@ class Property extends Component {
                 axios.get(`http://localhost:8000/secured/priority/priorityList`)
                     .then(response => {
                         this.setState({
-                            books: response.data
+                            books: response.data.data
                         })
                     })
                 ;
@@ -111,7 +111,7 @@ class Property extends Component {
                 axios.get(`http://localhost:8000/secured/priority/priorityList`)
                     .then(response => {
                         this.setState({
-                            books: response.data
+                            books: response.data.data
                         })
                     })
                 ;
