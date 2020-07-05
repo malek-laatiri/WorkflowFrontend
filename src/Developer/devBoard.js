@@ -389,11 +389,11 @@ export default class DevBoard extends React.Component {
 
                             <Grid.Row columns={2}>
                                 <Grid.Column textAlign="center">
-                                    <strong>add Comment</strong>
+                                    <strong>Add Comment</strong>
                                 </Grid.Column>
                                 <Grid.Column spacing={3}>
                                     <FormGroup className="mb-3">
-                                        <Input ref="comment" placeholder="hit enter to send a comment"
+                                        <Input ref="comment" placeholder="Add Reply"
                                                onKeyDown={(e) => {
                                                    if (e.key === 'Enter') {
                                                        if (e.target.value.length > 0) {
@@ -424,9 +424,11 @@ export default class DevBoard extends React.Component {
                                                }}/>
 
                                     </FormGroup>
-                                    <input type="file" onChange={this.onFileChange}/>
+                                    <input type="file" onChange={this.onFileChange} class="inputfile"  name="file" id="file"/>
+                                    <label htmlFor="file"><i className="fas fa-file-upload"></i><strong> Choose a file ...</strong></label>
+
                                     <button onClick={this.onFileUpload}>
-                                        Upload!
+                                        Reply
                                     </button>
                                 </Grid.Column>
                             </Grid.Row>
@@ -506,7 +508,7 @@ export default class DevBoard extends React.Component {
                            axios.get('http://localhost:8000/secured/UserStory/userStoryShow/' + cardId)
                                .then(response => {
                                    this.setState({
-                                       userStroyShow: response.data
+                                       userStroyShow: response.data.data
                                    });
                                    this.setState({
                                        newProjectModal: !this.state.newProjectModal
