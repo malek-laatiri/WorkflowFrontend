@@ -8,6 +8,7 @@ import 'react-notifications/lib/notifications.css';
 import MainPage from "../Developer/MainPage";
 import {Redirect, Route} from "react-router-dom";
 import AdminLayout from "../layouts/Admin";
+import {MDBBtn, MDBIcon} from "mdbreact";
 
 class Login extends React.Component {
 
@@ -23,7 +24,7 @@ class Login extends React.Component {
         redirect: false,
         decoded: '',
         decodedHeader: '',
-        token:''
+        token: ''
     }
 
 
@@ -149,21 +150,23 @@ class Login extends React.Component {
                                 component={MainPage}
                             />
                         :
-                        <div className="content">
+                        <div className="content " style={{backgroundColor: '#083b62'}}>
                             <Row>
                                 <Col md="2">
                                 </Col>
-                                <Col md="8">
+                                <Col md="8" className="centered">
                                     <Card className="card-user">
                                         <CardHeader>
-                                            <CardTitle tag="h5">Login Profile</CardTitle>
+                                            <CardTitle tag="h5">
+                                                <center>Sign in</center>
+                                            </CardTitle>
                                         </CardHeader>
                                         <CardBody>
                                             <Form>
-                                                <Row>
-                                                    <Col className="pr-1" md="5">
+                                                <Row className="justify-content-md-center">
+                                                    <Col className="pr-" md="4">
                                                         <FormGroup>
-                                                            <label>Username</label>
+                                                            <label htmlFor="login"><strong>Username</strong></label>
                                                             <Input
                                                                 value={this.state.newUserData.username}
                                                                 onChange={(e) => {
@@ -181,7 +184,7 @@ class Login extends React.Component {
                                                     <Col className="pl-1" md="4">
                                                         <FormGroup>
                                                             <label htmlFor="password">
-                                                                Password
+                                                                <strong>Password</strong>
                                                             </label>
                                                             <Input placeholder="Password" type="password"
                                                                    value={this.state.newUserData.password}
@@ -195,17 +198,13 @@ class Login extends React.Component {
                                                         </FormGroup>
                                                     </Col>
                                                 </Row>
-
-
                                                 <Row>
                                                     <div className="update ml-auto mr-auto">
-                                                        <Button
-                                                            className="btn-round"
-                                                            color="primary"
-                                                            onClick={this.addPriority.bind(this)}
+                                                        <MDBBtn outline color="info" onClick={this.addPriority.bind(this)}
                                                         >
                                                             Login
-                                                        </Button>
+                                                            <MDBIcon far icon="paper-plane" className="ml-1"/>
+                                                        </MDBBtn>
                                                     </div>
                                                 </Row>
                                             </Form>

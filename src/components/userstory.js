@@ -253,7 +253,7 @@ class UserStory extends Component {
                     axios.get(`http://localhost:8000/secured/UserStory/userStoryListPrime/` + localStorage.getItem('backlogid'))
                         .then(response => {
                             this.setState({
-                                UserStoriesoptions: response.data
+                                UserStoriesoptions: response.data.data
                             })
                         })
                     ;
@@ -333,7 +333,7 @@ class UserStory extends Component {
                     axios.get(`http://localhost:8000/secured/UserStory/userStoryListPrime/` + localStorage.getItem('backlogid'))
                         .then(response => {
                             this.setState({
-                                UserStoriesoptions: response.data
+                                UserStoriesoptions: response.data.data
                             })
                         })
                     ;

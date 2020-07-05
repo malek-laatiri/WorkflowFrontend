@@ -124,7 +124,7 @@ class Project extends Component {
             axios.get(`http://localhost:8000/secured/project/projectListPrime/` + getUser().id)
                 .then(response => {
                     this.setState({
-                        projects: response.data
+                        projects: response.data.data
                     })
                 })
             ;
@@ -153,7 +153,7 @@ class Project extends Component {
                 axios.get(`http://localhost:8000/secured/project/projectListPrime/` + getUser().id)
                     .then(response => {
                         this.setState({
-                            projects: response.data
+                            projects: response.data.data
                         })
                     })
                 ;
@@ -179,7 +179,7 @@ class Project extends Component {
                     axios.get(`http://localhost:8000/secured/project/projectListPrime/` + getUser().id)
                         .then(response => {
                             this.setState({
-                                projects: response.data
+                                projects: response.data.data
                             })
                         })
                     ;
@@ -250,7 +250,7 @@ class Project extends Component {
                                                     project</ModalHeader>
                                                 <ModalBody>
                                                     <FormGroup className="mb-3">
-                                                        <label htmlFor="name">name</label>
+                                                        <label htmlFor="name">Project Name</label>
                                                         <Input id="name" placeholder="with a placeholder"
                                                                value={this.state.newProjectData.name}
                                                                onChange={(e) => {
@@ -313,7 +313,7 @@ class Project extends Component {
 
                                                                    }
                                                                }}/>
-                                                        <label htmlFor="Team">Project Members</label>
+                                                        <label htmlFor="Team">Project Members <i aria-hidden="true" className="users icon"></i></label>
 
                                                         <Select
                                                             value={this.state.selectedOption}
@@ -322,6 +322,8 @@ class Project extends Component {
                                                             isSearchable
                                                             isMulti
                                                         />
+
+
                                                     </FormGroup>
                                                 </ModalBody>
                                                 <ModalFooter>
