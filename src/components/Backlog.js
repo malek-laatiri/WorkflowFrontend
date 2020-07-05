@@ -318,8 +318,7 @@ class Backlog extends Component {
 
                                             <Modal isOpen={this.state.editBacklogModal}
                                                    toggle={this.toggleEditBookModal.bind(this)}>
-                                                <ModalHeader toggle={this.toggleEditBookModal.bind(this)}>add new
-                                                    property</ModalHeader>
+                                                <ModalHeader toggle={this.toggleEditBookModal.bind(this)}>Edit a Backlog</ModalHeader>
                                                 <ModalBody>
                                                     <FormGroup className="mb-3">
                                                         <label htmlFor="name">title</label>

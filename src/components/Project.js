@@ -368,7 +368,7 @@ class Project extends Component {
                                             <Modal isOpen={this.state.editProjectModal}
                                                    toggle={this.toggleEditBookModal.bind(this)}>
                                                 <ModalHeader toggle={this.toggleEditBookModal.bind(this)}>Edit a
-                                                    property</ModalHeader>
+                                                    Project</ModalHeader>
                                                 <ModalBody>
                                                     <FormGroup className="mb-3">
                                                         <label htmlFor="name">name</label>

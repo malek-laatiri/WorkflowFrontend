@@ -234,7 +234,7 @@ class StatusDemo extends Component {
                                             <Modal isOpen={this.state.editstatusModal}
                                                    toggle={this.toggleEditBookModal.bind(this)}>
                                                 <ModalHeader toggle={this.toggleEditBookModal.bind(this)}>Edit a
-                                                    property</ModalHeader>
+                                                    Status</ModalHeader>
                                                 <ModalBody>
                                                     <FormGroup className="mb-3">
                                                         <label htmlFor="name">name</label>

@@ -53,6 +53,7 @@ class UserStory extends Component {
         selectedOptionStatus: null,
         selectedOptionPriority: null,
         selectedOption: null,
+        selectedOptionUpdateUser: null,
         selectedOptionActivity: null,
         newHistoryData: {
             userstory: '',
@@ -128,12 +129,12 @@ class UserStory extends Component {
     }
 
 
-    handleChangeUpdate = selectedOption => {
+    handleChangeUpdate = selectedOptionUpdateUser => {
         this.setState(
-            {selectedOption},
-            () => console.log(`Option selected:`, this.state.selectedOption)
+            {selectedOptionUpdateUser},
+            () => console.log(`Option selected:`, this.state.selectedOptionUpdateUser)
         );
-        this.state.editUserStoryData.asignedTo = selectedOption.value;
+        this.state.editUserStoryData.asignedTo = selectedOptionUpdateUser.value;
 
 
     };
@@ -267,6 +268,7 @@ class UserStory extends Component {
     }
 
     updateProperty() {
+        this.state.editUserStoryData.backlog=localStorage.getItem("backlogid")
         axios.patch('http://localhost:8000/secured/UserStory/UerStoryUpdate/' + this.state.editUserStoryData.id, this.state.editUserStoryData).then(
             (response) => {
                 let {userstories} = this.state;
@@ -305,7 +307,7 @@ class UserStory extends Component {
 
     }
 
-    editProperty(id, subject, content, estimatedTime, dueDate, tags, priority, status, backlog, asignedTo, activity) {
+    editProperty(id, subject, content, estimatedTime, dueDate, tags, priority, status, asignedTo, activity) {
         localStorage.setItem('userstoryid', id);
         this.setState({
             editUserStoryData: {
@@ -317,11 +319,11 @@ class UserStory extends Component {
                 tags,
                 priority,
                 status,
-                backlog,
                 asignedTo,
                 activity
             }, editUserStoryModal: !this.state.editUserStoryModal
         });
+        console.log(this.state.editUserStoryData)
     }
 
     deleteProperty(id) {
@@ -385,7 +387,7 @@ class UserStory extends Component {
                     <td>
                         <Button color="success" className="mr-2"
                                 onClick={this.editProperty.bind(this, book.id, book.subject, book.content, book.estimated_time, book.due_date,
-                                    book.tags, book.priority.name, book.status.name, book.asigned_to.username, book.activity.name)}>Edit</Button>
+                                    book.tags, book.priority.name, book.status.name, book.asigned_to, book.activity.name)}>Edit</Button>
                         <Button color="danger" onClick={this.deleteProperty.bind(this, book.id)}>Delete</Button>
 
                     </td>
@@ -588,7 +590,7 @@ class UserStory extends Component {
                                                         <label htmlFor="Team">Project Members</label>
 
                                                         <Select
-                                                            value={this.state.editUserStoryData.asignedTo}
+                                                            defaultValue={[{label:this.state.editUserStoryData.asignedTo.username,value:this.state.editUserStoryData.asignedTo.id}]}
                                                             onChange={this.handleChangeUpdate}
                                                             options={options}
                                                             isSearchable

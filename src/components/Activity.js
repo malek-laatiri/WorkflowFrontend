@@ -179,8 +179,8 @@ class Activity extends Component {
 
                                     <Modal isOpen={this.state.editActivityModal}
                                            toggle={this.toggleEditBookModal.bind(this)}>
-                                        <ModalHeader toggle={this.toggleEditBookModal.bind(this)}>Edit a
-                                            project</ModalHeader>
+                                        <ModalHeader toggle={this.toggleEditBookModal.bind(this)}>Edit an
+                                            Activity</ModalHeader>
                                         <ModalBody>
                                             <FormGroup className="mb-3">
                                                 <label htmlFor="name">name</label>
