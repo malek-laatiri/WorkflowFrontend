@@ -8,6 +8,7 @@ import {NotificationContainer} from "react-notifications";
 
 
 let options = [];
+let optionsUpdate = [];
 
 
 class Project extends Component {
@@ -31,9 +32,13 @@ class Project extends Component {
             dueDate: '',
             sprintNum: '',
             done: '',
-            createdBy: ''
+            createdBy: '',
+            Team: []
+
         },
-        selectedOption: null
+        selectedOption: null,
+        selectedOptionUpdate: null
+
 
     }
 
@@ -65,6 +70,15 @@ class Project extends Component {
 
     };
 
+    handleChangeUpdate = selectedOptionUpdate => {
+        this.setState(
+            {selectedOptionUpdate},
+            () => console.log(`Option selected:`, this.state.selectedOptionUpdate)
+        );
+
+
+    };
+
     toggleNewBookModal() {
         this.setState({
             newProjectModal: !this.state.newProjectModal
@@ -84,6 +98,15 @@ class Project extends Component {
         this.setState({
             editProjectModal: !this.state.editProjectModal
         })
+        if (this.state.editProjectData.Team.length > 0 && optionsUpdate.length === 0) {
+            return this.state.editProjectData.Team.map((e, i) =>
+                [
+                    optionsUpdate.push({label: `${e.username}`, value: `${e.id}`})
+                ]
+            );
+        }
+        console.log(optionsUpdate)
+
     }
 
     toggleNewBacklogModal() {
@@ -134,9 +157,14 @@ class Project extends Component {
     }
 
     updateProperty() {
+        this.state.editProjectData.createdBy = getUser().id;
+        this.state.editProjectData.Team = [];
+
+        this.state.selectedOptionUpdate.forEach(element => this.state.editProjectData.Team.push(element.value));
         axios.patch('http://localhost:8000/secured/project/ProjectUpdate/' + this.state.editProjectData.id, this.state.editProjectData).then(
             (response) => {
-                this.state.editProjectData.createdBy = getUser().id;
+
+                console.log(this.state.editProjectData)
                 let {projects} = this.state;
                 projects.push(response.data);
                 this.setState({
@@ -162,9 +190,9 @@ class Project extends Component {
         );
     }
 
-    editProperty(id, name, startDate, dueDate, done, createdBy, sprintNum) {
+    editProperty(id, name, startDate, dueDate, done, createdBy, sprintNum,Team) {
         this.setState({
-            editProjectData: {id, name, startDate, dueDate, sprintNum, done, createdBy},
+            editProjectData: {id, name, startDate, dueDate, sprintNum, done, createdBy,Team},
             editProjectModal: !this.state.editProjectModal
         });
         console.log(this.state.editProjectData)
@@ -222,7 +250,7 @@ class Project extends Component {
 
                     <td>
                         <Button color="success" className="mr-2"
-                                onClick={this.editProperty.bind(this, book.id, book.name, book.start_date, book.due_date, book.done, getUser().id, book.sprint_num)}>Edit</Button>
+                                onClick={this.editProperty.bind(this, book.id, book.name, book.start_date, book.due_date, book.done, getUser().id, book.sprint_num,book.team)}>Edit</Button>
                         <Button color="danger" onClick={this.deleteProperty.bind(this, book.id)}>Delete</Button>
 
                     </td>
@@ -394,6 +422,16 @@ class Project extends Component {
                                                                    this.setState({editProjectData});
 
                                                                }}/>
+                                                        <label htmlFor="Team">Project Members <i aria-hidden="true" className="users icon"></i></label>
+
+                                                        <Select
+                                                            onChange={this.handleChangeUpdate}
+                                                            options={options}
+                                                            isSearchable
+                                                            isMulti
+                                                            defaultValue={optionsUpdate}
+
+                                                        />
                                                     </FormGroup>
                                                 </ModalBody>
                                                 <ModalFooter>
