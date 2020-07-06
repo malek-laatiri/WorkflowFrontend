@@ -183,7 +183,7 @@ export default class DevBoard extends React.Component {
             content: this.state.newCommentData.content,
             writtenBy: getUser().id
         }).then(response => {
-            if (this.state.selectedFile){
+            if (this.state.selectedFile) {
                 const formData = new FormData();
                 formData.append("upload[imageFile]", this.state.selectedFile);
                 formData.append("imageName", this.state.selectedFile.name);
@@ -308,50 +308,58 @@ export default class DevBoard extends React.Component {
                                 <Grid.Column>
                                     {this.state.userStroyShow.histories ?
                                         this.state.userStroyShow.histories.map(home =>
-                                            <div><small><a href="#" style={{color: "#5e6c84"}}>{moment(home.modified_at).fromNow()}</a></small> <strong>{home.status.name}</strong></div>
+                                            <div>
+                                                <small><a href="#"
+                                                          style={{color: "#5e6c84"}}>{moment(home.modified_at).fromNow()}</a>
+                                                </small>
+                                                <strong>{home.status.name}</strong></div>
                                         )
                                         : <div>loading</div>}
                                 </Grid.Column>
                             </Grid.Row>
                             <Grid.Row columns={2}>
-
-                                {JSON.stringify(getUser()) != JSON.stringify(this.state.userStroyShow.asigned_to) || getUser().roles.includes("ROLE_CLIENT") && getUser().privilege == 0 ?
+                                {this.state.userStroyShow.asigned_to ?
                                     <>
-                                        <Grid.Column textAlign="center">
-                                            <strong>Current Progress</strong>
-                                        </Grid.Column>
-                                        <Grid.Column>
-                                            <Typography id="discrete-slider-always" gutterBottom>
-                                                {this.state.userStroyShow.progress}%
-                                            </Typography>
-                                            <ProgressBar animated now={this.state.userStroyShow.progress}/>
-                                        </Grid.Column>
+                                        {JSON.stringify(getUser().email) != JSON.stringify(this.state.userStroyShow.asigned_to.email) || getUser().roles.includes("ROLE_CLIENT") && getUser().privilege == 0 ?
+                                            <>
+                                                <Grid.Column textAlign="center">
+                                                    <strong>Current Progress</strong>
+                                                </Grid.Column>
+                                                <Grid.Column>
+                                                    <Typography id="discrete-slider-always" gutterBottom>
+                                                        {this.state.userStroyShow.progress}%
+                                                    </Typography>
+                                                    <ProgressBar animated now={this.state.userStroyShow.progress}/>
+                                                </Grid.Column>
+                                            </>
+                                            :
+                                            <>
+
+                                                <Grid.Column textAlign="center">
+
+                                                    <Typography id="discrete-slider-always" gutterBottom>
+                                                        Change Progress </Typography>
+                                                </Grid.Column>
+
+                                                <Grid.Column>
+
+                                                    <Slider
+                                                        defaultValue={this.state.userStroyShow.progress}
+                                                        aria-labelledby="discrete-slider-always"
+                                                        step={10}
+                                                        marks={true}
+                                                        valueLabelDisplay="on"
+                                                        onChange={this.handleChange}
+
+
+                                                    />
+                                                </Grid.Column>
+                                            </>
+                                        }
                                     </>
                                     :
-                                    <>
-
-                                        <Grid.Column textAlign="center">
-
-                                            <Typography id="discrete-slider-always" gutterBottom>
-                                                Change Progress </Typography>
-                                        </Grid.Column>
-
-                                        <Grid.Column>
-
-                                            <Slider
-                                                defaultValue={this.state.userStroyShow.progress}
-                                                aria-labelledby="discrete-slider-always"
-                                                step={10}
-                                                marks={true}
-                                                valueLabelDisplay="on"
-                                                onChange={this.handleChange}
-
-
-                                            />
-                                        </Grid.Column>
-                                    </>
+                                    <div>loading</div>
                                 }
-
 
                             </Grid.Row>
 
@@ -363,26 +371,28 @@ export default class DevBoard extends React.Component {
                                     {this.state.userStroyShow.comments ?
                                         this.state.userStroyShow.comments.map(home =>
                                             <div>
-                                                {home.written_by.email===getUser().email?
-                                                    <i style={{color: "red"}} className="fas fa-trash-alt" onClick={()=> {
-                                                        axios.delete('http://localhost:8000/secured/comments/delete/' + home.id)
-                                                        this.setState({
-                                                            newProjectModal: !this.state.newProjectModal
-                                                        })
-                                                    }}></i>:<div></div>}
-                                                <strong>{home.written_by.username}</strong> {home.content}<br/> <small><a href="#" style={{color: "#5e6c84"}}>{moment(home.written_at).fromNow()}</a></small>
+                                                {home.written_by.email === getUser().email ?
+                                                    <i style={{color: "red"}} className="fas fa-trash-alt"
+                                                       onClick={() => {
+                                                           axios.delete('http://localhost:8000/secured/comments/delete/' + home.id)
+                                                           this.setState({
+                                                               newProjectModal: !this.state.newProjectModal
+                                                           })
+                                                       }}></i> : <div></div>}
+                                                <strong>{home.written_by.username}</strong> {home.content}<br/>
+                                                <small><a href="#"
+                                                          style={{color: "#5e6c84"}}>{moment(home.written_at).fromNow()}</a>
+                                                </small>
                                                 <br/>
                                                 {home.files ?
                                                     home.files.map(files =>
                                                         <a href={`http://localhost:8000/secured/files/download/${files.id}`}>{files.image_name}</a>
-
-
-                                                )
-                                                :
-                                                <div></div>
+                                                    )
+                                                    :
+                                                    <div></div>
                                                 }
 
-                                                 </div>)
+                                            </div>)
                                         : <div>There's no comments</div>}
                                 </Grid.Column>
                             </Grid.Row>
@@ -424,8 +434,10 @@ export default class DevBoard extends React.Component {
                                                }}/>
 
                                     </FormGroup>
-                                    <input type="file" onChange={this.onFileChange} class="inputfile"  name="file" id="file"/>
-                                    <label htmlFor="file"><i className="fas fa-file-upload"></i><strong> Choose a file ...</strong></label>
+                                    <input type="file" onChange={this.onFileChange} class="inputfile" name="file"
+                                           id="file"/>
+                                    <label htmlFor="file"><i className="fas fa-file-upload"></i><strong> Choose a file
+                                        ...</strong></label>
 
                                     <button onClick={this.onFileUpload}>
                                         Reply
@@ -467,7 +479,7 @@ export default class DevBoard extends React.Component {
 
                                     <Grid.Row columns={2}>
                                         <Grid.Column textAlign="center">
-                                           <strong>Validation</strong>
+                                            <strong>Validation</strong>
                                         </Grid.Column>
                                         <Grid.Column>
                                             <Checkbox toggle onChange={(event) => {
