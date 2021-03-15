@@ -29,7 +29,7 @@
     "moment": "^2.24.0",
     "multiselect-react-dropdown": "^1.4.7",
     "name-that-color": "^0.1.0",
-    "node-sass": "4.12.0",
+    "node-sass": "4.13.1",
     "perfect-scrollbar": "1.4.0",
     "prettier": "^1.19.1",
     "rc-slider": "^9.2.4",
